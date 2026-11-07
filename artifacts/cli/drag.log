@@ -1,0 +1,6 @@
+===== drag =====
+command: /workspace/target/release/sgrun drag --hgamma 0.005 --decays 5
+start_utc=2026-11-07T01:59:35Z
+{"provenance":{"tool":"sgrun","crate":"shadowgrav-core","version":"0.2.1","git_commit":"e89f0b1082a2","git_state":"dirty","rustc":"rustc 1.83.0 (90b35a623 2024-11-26)","os":"linux","arch":"x86_64","features":{"parallel":true,"vendored_libm":false},"threads":4,"unix_time":1794016775,"args":"drag --hgamma 0.005 --decays 5"},"command":"drag","h_gamma":0.005,"gamma_ref":8.374578933206799e4,"gamma_fit":8.374596460977936e4,"rel_err":2.093e-6,"scheme_bias_expected":2.083e-6,"steps":1000,"fp_nonconverged":0}
+exit_code=0
+end_utc=2026-11-07T01:59:35Z

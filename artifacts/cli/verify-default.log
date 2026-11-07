@@ -1,0 +1,28 @@
+===== verify-default =====
+command: /workspace/target/release/verify
+start_utc=2026-11-07T01:59:36Z
+--- stage A: single-step force identities
+[PASS] S(tau=0.1) table                               0.963480 vs 0.96348
+[PASS] S(tau=1) table                                 0.707277 vs 0.70728
+[PASS] S(tau=10) table                                0.147001 vs 0.147
+[PASS] F d^2 = S^2 (tau=0.1), d/a=1.5..50             worst 2.4e-16
+[PASS] F d^2 = S^2 (tau=1), d/a=1.5..50               worst 2.2e-16
+[PASS] F d^2 = S^2 (tau=10), d/a=1.5..50              worst 1.6e-16
+[PASS] closed form vs forced GL (tau<=50)             worst 6.0e-16
+[PASS] reciprocity                                    0.0e0
+--- stage B: test (a) orbit, 5 orbits, h = T/1000
+[PASS] period rel err <= 0.36 (wh)^2 (Addendum 2.1)   1.34e-5 vs 1.42e-5
+[PASS] max |dE/E| <= (wh)^2                           3.90e-10 vs 3.95e-5
+[PASS] secular dE small                               3.47e-15
+[PASS] |dL/L| <= 1e-12                                5.18e-15
+[PASS] R_P <= 1e-12                                   0.00e0
+[PASS] Delta^NA == 0                                  0.0e0
+    (0.3s)
+--- stage C: test (d1) drag decay, h*gamma = 0.005
+[PASS] gamma fit rel err < 1e-5                       2.09e-6 (fit 8.374596e4, ref 8.374579e4, scheme bias ~2.1e-6)
+[PASS] fixed point converged every step               max iters 4
+[PASS] (d2) frame invariance < 1e-12                  4.6e-14
+
+0 check(s) failed
+exit_code=0
+end_utc=2026-11-07T01:59:36Z

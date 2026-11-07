@@ -1,0 +1,22 @@
+===== verify-c =====
+command: /workspace/target/release/verify c
+start_utc=2026-11-07T01:59:36Z
+--- test (c) measurements (tau = 20 unless stated).  Spec target: |R-0.8| <= 1e-6, alt. in standard mode ~5e-3
+standard f=0.15 cap12              R=0.798712473  |R-0.8|=1.29e-3  F_B/F_A=0.0e0  A+C=1.4e-14  leaves=1232  cap_hits=0  0.00s
+standard f=0.075 cap12             R=0.799701516  |R-0.8|=2.98e-4  F_B/F_A=0.0e0  A+C=1.2e-15  leaves=4444  cap_hits=0  0.00s
+standard f=0.0375 cap13            R=0.800141744  |R-0.8|=1.42e-4  F_B/F_A=0.0e0  A+C=1.6e-15  leaves=16696  cap_hits=0  0.00s
+validation (0.02, 4e-4, cap14)     R=0.799984164  |R-0.8|=1.58e-5  F_B/F_A=0.0e0  A+C=8.0e-16  leaves=540512  cap_hits=0  0.06s
+xhi (0.002, 4e-4, cap14)           R=0.799996680  |R-0.8|=3.32e-6  F_B/F_A=0.0e0  A+C=8.0e-16  leaves=4467284  cap_hits=0  0.42s
+--- R(tau) monotonic decrease, standard mode
+standard tau=0.001                 R=0.999810641  |R-0.8|=2.00e-1  F_B/F_A=0.0e0  A+C=1.3e-20  leaves=1232  cap_hits=0  0.00s
+standard tau=0.01                  R=0.998114536  |R-0.8|=1.98e-1  F_B/F_A=0.0e0  A+C=1.3e-19  leaves=1232  cap_hits=0  0.00s
+standard tau=0.1                   R=0.981932713  |R-0.8|=1.82e-1  F_B/F_A=0.0e0  A+C=1.2e-16  leaves=1232  cap_hits=0  0.00s
+standard tau=1                     R=0.877901172  |R-0.8|=7.79e-2  F_B/F_A=0.0e0  A+C=1.6e-15  leaves=1232  cap_hits=0  0.00s
+standard tau=5                     R=0.801937863  |R-0.8|=1.94e-3  F_B/F_A=0.0e0  A+C=5.4e-15  leaves=1232  cap_hits=0  0.00s
+standard tau=10                    R=0.799632668  |R-0.8|=3.67e-4  F_B/F_A=0.0e0  A+C=8.8e-15  leaves=1232  cap_hits=0  0.00s
+standard tau=20                    R=0.798712473  |R-0.8|=1.29e-3  F_B/F_A=0.0e0  A+C=1.4e-14  leaves=1232  cap_hits=0  0.00s
+standard tau=50                    R=0.797572346  |R-0.8|=2.43e-3  F_B/F_A=0.0e0  A+C=1.9e-14  leaves=1232  cap_hits=0  0.00s
+
+0 check(s) failed
+exit_code=0
+end_utc=2026-11-07T01:59:37Z

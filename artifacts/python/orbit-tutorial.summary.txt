@@ -1,0 +1,6 @@
+Source rows: 41
+Time span: 0.000000e+00 → 8.886099e+00
+Initial E: -4.999625e-01
+Max |dE_rel|: 1.521e-08
+Max |dL_rel|: 2.669e-15
+Max |dP_rel|: 0.000e+00

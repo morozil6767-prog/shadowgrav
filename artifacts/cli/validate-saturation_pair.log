@@ -1,0 +1,6 @@
+===== validate-saturation_pair =====
+command: /workspace/target/release/sgrun validate /workspace/shadowgrav-core/scenarios/saturation_pair.json
+start_utc=2026-11-07T01:59:35Z
+{"valid":true,"bodies":2,"mode":"V0"}
+exit_code=0
+end_utc=2026-11-07T01:59:35Z

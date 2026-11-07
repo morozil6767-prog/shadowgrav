@@ -1,0 +1,273 @@
+=== command ===
+cargo test --release --locked -p shadowgrav-core --no-default-features --features vendored-libm -- --test-threads=1
+toolchain: rustc 1.83.0 (90b35a623 2024-11-26)
+=== start_utc ===
+2026-11-07T02:01:51Z
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+ Downloading crates ...
+  Downloaded libm v0.2.16
+    Blocking waiting for file lock on package cache
+   Compiling libm v0.2.16
+   Compiling shadowgrav-core v0.2.1 (/workspace/shadowgrav-core)
+    Finished `release` profile [optimized] target(s) in 11.89s
+     Running unittests src/lib.rs (/tmp/sg-vendored/release/deps/shadowgrav_core-5d9fd6e3d2fc3e25)
+
+running 4 tests
+test skymap::tests::nonadditive_part_is_never_positive ... ok
+test skymap::tests::nonadditive_support_is_exactly_the_overlap ... ok
+test skymap::tests::projection_roundtrip ... ok
+test skymap::tests::two_body_has_no_nonadditive_part_and_deficit_peaks_toward_the_other_body ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/bin/bench.rs (/tmp/sg-vendored/release/deps/bench-9f486e8928e03e79)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/converge.rs (/tmp/sg-vendored/release/deps/converge-f5fccf161f16cca4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/sgrun.rs (/tmp/sg-vendored/release/deps/sgrun-abc47aa502dd56a3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/verify.rs (/tmp/sg-vendored/release/deps/verify-f585aead6a973811)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diag_gaps.rs (/tmp/sg-vendored/release/deps/diag_gaps-5e774d102100d5c2)
+
+running 15 tests
+test aggregates_match_per_body_values_and_distinguish_not_measured ... ok
+test midrun_nan_velocity_aborts_the_step_and_rolls_back ... ok
+test midrun_non_finite_force_aborts_the_step_and_rolls_back ... ok
+test midrun_overflow_in_the_drift_aborts_the_step ... ok
+test non_finite_force_from_a_live_edit_is_rolled_back ... ok
+test out_of_table_parameters_produce_warnings ... ok
+test reference_diag_out_of_scope_is_not_a_pass ... ok
+test reference_diag_reports_the_engine_error ... ok
+test seeliger_check_refuses_bad_input ... ok
+test seeliger_paired_run_matches_exp_minus_alpha_d ... ok
+test snapshot_extras_are_opt_in ... ok
+test tau_max_exact_for_isolated_and_collinear_occluders ... ok
+test tau_max_respects_its_bounds_and_leaves_only_raise_it ... ok
+test total_heating_power_is_the_sum_of_per_body_powers ... ok
+test v2_valid_flag_reports_fast_bodies_in_every_mode ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/edge_cases.rs (/tmp/sg-vendored/release/deps/edge_cases-5e2fb53da4125aee)
+
+running 3 tests
+test cap_hit_flag_fires_when_the_cap_is_too_coarse ... ok
+test coincident_centres_contribute_no_pair_force ... ok
+test non_finite_positions_are_rejected ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/geometry_suite.rs (/tmp/sg-vendored/release/deps/geometry_suite-73ab603f16095970)
+
+running 9 tests
+test advance_100_steps_n7_no_nonfinite ... ok
+test collimated_nonoverlapping_bodies_exercise_nonadditive_stress_path ... ok
+test collinear_screening_standard_within_provisional ... ok
+test collinear_screening_validation_tighter_than_standard ... ok
+test geff_matches_expected_when_disjoint ... ok
+test n12_ring_momentum_residual_under_validation ... ok
+test partial_and_3d_layouts_finite_forces_and_nonnegative_delta_na ... ok
+test twenty_orbit_energy_and_angular_momentum_bounded ... ok
+test two_body_force_is_translation_and_rotation_equivariant ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.83s
+
+     Running tests/hardening.rs (/tmp/sg-vendored/release/deps/hardening-9e698d8f8e3ad325)
+
+running 13 tests
+test body_nonfinite_velocity_is_rejected_even_when_force_is_zero ... ok
+test body_species_offset_must_keep_extinction_positive ... ok
+test derive_rejects_mismatched_particle_arrays_without_panicking ... ok
+test documented_density_is_accepted ... ok
+test force_boundary_rejects_nonphysical_derived_values ... ok
+test force_boundary_rejects_stale_derived_array_lengths ... ok
+test heating_parameters_follow_the_documented_domain ... ok
+test invalid_edits_are_rejected_and_rolled_back ... ok
+test probes_must_keep_the_contract_unit_mass_and_valid_stored_density ... ok
+test refresh_rejects_invalid_configuration_before_force_rebuild ... ok
+test singleton_runs_still_reject_invalid_global_parameters ... ok
+test stepping_revalidates_publicly_mutable_world_configuration ... ok
+test velocity_edit_rejects_corrupt_particle_storage_without_panicking ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/healpix_ref.rs (/tmp/sg-vendored/release/deps/healpix_ref-a883b1041cd23a3e)
+
+running 5 tests
+test base_centres_nside1 ... ok
+test bounding_radius_covers_descendants ... ok
+test equal_area_quadrature_and_symmetry ... ok
+test nside2_children_of_face0 ... ok
+test unit_norm_all_levels ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+     Running tests/identities.rs (/tmp/sg-vendored/release/deps/identities-71d8c49926fd0b09)
+
+running 17 tests
+test aeff_identity_and_thin_force ... ok
+test closed_form_vs_forced_gl ... ok
+test continuity_at_contact ... ok
+test disjoint_has_empty_correction ... ok
+test e_at_zero_eps_equals_p_chat ... ok
+test interior_pair_cancellation_free ... ok
+test interior_thin_uniform_sphere_field ... ok
+test isolated_sphere_is_inert ... ok
+test large_tau_limit ... ok
+test reciprocity_and_n1 ... ok
+test saturation_function ... ok
+test saturation_ratio_is_s_squared_and_d_independent ... ok
+test screening_standard_mode_provisional ... ok
+test seeliger_single_pair ... ok
+test sweep_matches_alpha_zero_limit ... ok
+test v2_matches_eq10_thin_pair ... ok
+test v2_zero_velocity_reduces_to_v0 ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/integrator.rs (/tmp/sg-vendored/release/deps/integrator-55382721f3434e21)
+
+running 25 tests
+test adaptive_h_matches_eq13_for_two_bodies ... ok
+test adaptive_step_is_flagged_and_bounded ... ok
+test adaptive_v1_fixed_point_converges_every_step ... ok
+test apply_globals_rederives_and_rebases ... ok
+test drag_decay_rate_matches_gamma ... ok
+test drag_scheme_bias_is_h_gamma_squared_over_12 ... ok
+test energy_is_labelled_non_conservative_with_drag ... ok
+test failed_step_is_atomic ... ok
+test fixed_point_nonconvergence_is_flagged_not_hidden ... ok
+test frame_invariance_of_drag_evolution ... ok
+test heating_of_isolated_body_is_exact ... ok
+test orbit_expected_omega_is_sqrt2_s ... ok
+test orbit_five_orbits ... ok
+test orbit_hundred_orbits ... ignored, 1e5 steps; run with --release -- --ignored
+test orbit_period_error_scales_as_h_squared ... ok
+test probes_are_static_and_report_effective_g ... ok
+test screening_certified_mode_meets_1e6 ... ok
+test screening_three_body_short_evolution ... ignored, expensive; measure leaf counts first
+test screening_xhi_regression_bound ... ok
+test v0_uses_one_force_evaluation_per_step ... ok
+test v1_runs_one_force_evaluation_per_step ... ok
+test v1_shortcut_is_bit_identical_to_full_evaluation ... ok
+test v2_gating_rejects_large_eps_and_leaves_no_world ... ok
+test v2_orbit_converges_and_tracks_v1_at_large_vg ... ok
+test verlet_is_time_reversible_v0 ... ok
+
+test result: ok. 23 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 20.12s
+
+     Running tests/invariance.rs (/tmp/sg-vendored/release/deps/invariance-db0ee3f3953e84a6)
+
+running 5 tests
+test force_is_finite_and_reciprocal_for_a_dense_random_cluster ... ok
+test permuting_the_bodies_permutes_the_forces ... ok
+test rotating_the_cluster_rotates_the_forces_to_quadrature_accuracy ... ok
+test translating_the_cluster_leaves_forces_unchanged ... ok
+test uniform_scaling_obeys_the_dimensional_law ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.23s
+
+     Running tests/oracle_lens.rs (/tmp/sg-vendored/release/deps/oracle_lens-5f4f50bb681a4c00)
+
+running 3 tests
+test certified_mode_vs_sharp_lens_oracle ... ignored, certified-level quadrature on partial overlap: cost unmeasured
+test standard_mode_vs_sharp_lens_oracle ... ok
+test validation_mode_meets_spec_4_3_target_vs_sharp_lens_oracle ... ok
+
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/oracle_sky.rs (/tmp/sg-vendored/release/deps/oracle_sky-adbab4ed67718dc7)
+
+running 4 tests
+test partial_and_3d_overlap_standard_mode_matches_sky_oracle ... ok
+test partial_and_3d_overlap_validation_mode_matches_sky_oracle ... ok
+test screening_curve_certified_mode_matches_exact_oracle ... ignored, ~40 s: three 65M-leaf evaluations
+test screening_curve_matches_exact_oracle ... ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.56s
+
+     Running tests/perf_equiv.rs (/tmp/sg-vendored/release/deps/perf_equiv-b6979bf70aefd3fc)
+
+running 4 tests
+test hash_candidates_equal_brute ... ok
+test parallel_hash_and_brute_are_bitwise_identical ... ok
+test thin_fast_is_gated ... ok
+test thin_fast_matches_conforming_within_barnes_hut_error ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
+
+     Running tests/reference_mode.rs (/tmp/sg-vendored/release/deps/reference_mode-ea4687ea78b2eb66)
+
+running 4 tests
+test reference_judges_the_production_quadrature ... ok
+test reference_refuses_out_of_scope_worlds ... ok
+test reference_reproduces_exact_screening_ratio ... ok
+test reference_two_body_matches_closed_form_pair ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.82s
+
+     Running tests/scenario.rs (/tmp/sg-vendored/release/deps/scenario-1a8ca4c5fe55db10)
+
+running 8 tests
+test collinear_example_gives_the_screening_ratio_of_test_c ... ok
+test drag_decay_example_falls_to_one_over_e ... ok
+test engine_validation_reaches_the_user_as_an_error ... ok
+test every_shipped_example_parses_and_builds ... ok
+test every_shipped_scenario_runs_to_completion ... ok
+test json_reader_basics_and_errors ... ok
+test thin_two_body_example_is_newtonian_to_the_thin_limit_error ... ok
+test unknown_and_missing_keys_are_errors_not_defaults ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+
+     Running tests/spec_gaps.rs (/tmp/sg-vendored/release/deps/spec_gaps-0b3f50a7b9d3c5b6)
+
+running 7 tests
+test drag_rate_diagnostic_matches_reference ... ok
+test equivalence_principle_eta_ep_equals_delta_to_first_order ... ok
+test invalid_mass_or_density_is_rejected ... ok
+test newtonian_and_thin_residuals_equal_one_minus_s_squared ... ok
+test screening_curve_validation_mode_tracks_exact_oracle ... ok
+test screening_deviation_is_linear_in_tau_at_small_tau ... ok
+test screening_ratio_decreases_monotonically ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.41s
+
+   Doc-tests shadowgrav_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+test_exit=0
+=== repro-hash vendored serial ===
+orbit_forces       e60572a3d079862d
+orbit_state_200    c643d780b40120fd
+screen_std         9eee9748d2156d26
+screen_val         c0896a97960b52e1
+overlap3d_std      2de33d701849ff93
+orbit_v1           3b51b87fbd2ee11d
+orbit_v2           432f91253e0cc4f0
+combined           064448c38b42b9f2
+{"provenance":{"tool":"sgrun","crate":"shadowgrav-core","version":"0.2.1","git_commit":"e89f0b1082a2","git_state":"dirty","rustc":"rustc 1.83.0 (90b35a623 2024-11-26)","os":"linux","arch":"x86_64","features":{"parallel":false,"vendored_libm":true},"threads":4,"unix_time":1794016954,"args":"repro-hash"},"command":"repro-hash","combined":"064448c38b42b9f2"}
+repro_exit=0
+=== end_utc ===
+2026-11-07T02:02:34Z

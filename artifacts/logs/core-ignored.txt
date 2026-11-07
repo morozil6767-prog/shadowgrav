@@ -1,0 +1,26 @@
+=== start_utc ===
+2026-11-07T02:01:51Z
+=== integrator ignored ===
+    Blocking waiting for file lock on package cache
+    Finished `release` profile [optimized] target(s) in 0.83s
+     Running tests/integrator.rs (target/release/deps/integrator-b759f09b4da362ac)
+
+running 2 tests
+test orbit_hundred_orbits ... ok
+test screening_three_body_short_evolution ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 23 filtered out; finished in 8.08s
+
+integrator_ignored_exit=0
+=== oracle_sky ignored ===
+    Finished `release` profile [optimized] target(s) in 0.18s
+     Running tests/oracle_sky.rs (target/release/deps/oracle_sky-072012fda7337510)
+
+running 1 test
+test screening_curve_certified_mode_matches_exact_oracle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 29.62s
+
+oracle_sky_ignored_exit=0
+=== end_utc ===
+2026-11-07T02:02:30Z

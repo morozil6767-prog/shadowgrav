@@ -1,0 +1,280 @@
+=== command ===
+cargo test --release --locked -p shadowgrav-core -- --test-threads=4
+=== start_utc ===
+2026-11-07T01:57:40Z
+=== rustc ===
+rustc 1.83.0 (90b35a623 2024-11-26)
+binary: rustc
+commit-hash: 90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf
+commit-date: 2024-11-26
+host: x86_64-unknown-linux-gnu
+release: 1.83.0
+LLVM version: 19.1.1
+=== cargo ===
+cargo 1.83.0 (5ffbef321 2024-10-29)
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded rayon-core v1.13.0
+  Downloaded crossbeam-epoch v0.9.21
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded either v1.19.0
+  Downloaded rayon v1.12.0
+   Compiling crossbeam-utils v0.8.23
+   Compiling crossbeam-epoch v0.9.21
+   Compiling crossbeam-deque v0.8.8
+   Compiling rayon-core v1.13.0
+   Compiling shadowgrav-core v0.2.1 (/workspace/shadowgrav-core)
+   Compiling either v1.19.0
+   Compiling rayon v1.12.0
+    Finished `release` profile [optimized] target(s) in 10.37s
+     Running unittests src/lib.rs (target/release/deps/shadowgrav_core-68d86458f06dc07e)
+
+running 4 tests
+test skymap::tests::two_body_has_no_nonadditive_part_and_deficit_peaks_toward_the_other_body ... ok
+test skymap::tests::nonadditive_part_is_never_positive ... ok
+test skymap::tests::projection_roundtrip ... ok
+test skymap::tests::nonadditive_support_is_exactly_the_overlap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/bin/bench.rs (target/release/deps/bench-51d5759223ff6493)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/converge.rs (target/release/deps/converge-8fef4713f6b973df)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/sgrun.rs (target/release/deps/sgrun-f011a7ac6869ad9a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/verify.rs (target/release/deps/verify-09eabea02226cbba)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diag_gaps.rs (target/release/deps/diag_gaps-afd56f59712aab1c)
+
+running 15 tests
+test midrun_nan_velocity_aborts_the_step_and_rolls_back ... ok
+test midrun_non_finite_force_aborts_the_step_and_rolls_back ... ok
+test out_of_table_parameters_produce_warnings ... ok
+test midrun_overflow_in_the_drift_aborts_the_step ... ok
+test aggregates_match_per_body_values_and_distinguish_not_measured ... ok
+test reference_diag_out_of_scope_is_not_a_pass ... ok
+test seeliger_check_refuses_bad_input ... ok
+test non_finite_force_from_a_live_edit_is_rolled_back ... ok
+test seeliger_paired_run_matches_exp_minus_alpha_d ... ok
+test tau_max_exact_for_isolated_and_collinear_occluders ... ok
+test snapshot_extras_are_opt_in ... ok
+test total_heating_power_is_the_sum_of_per_body_powers ... ok
+test v2_valid_flag_reports_fast_bodies_in_every_mode ... ok
+test tau_max_respects_its_bounds_and_leaves_only_raise_it ... ok
+test reference_diag_reports_the_engine_error ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/edge_cases.rs (target/release/deps/edge_cases-e98f5e7dfc542fbf)
+
+running 3 tests
+test non_finite_positions_are_rejected ... ok
+test cap_hit_flag_fires_when_the_cap_is_too_coarse ... ok
+test coincident_centres_contribute_no_pair_force ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/geometry_suite.rs (target/release/deps/geometry_suite-a7424b62adb5a14f)
+
+running 9 tests
+test collinear_screening_standard_within_provisional ... ok
+test geff_matches_expected_when_disjoint ... ok
+test advance_100_steps_n7_no_nonfinite ... ok
+test n12_ring_momentum_residual_under_validation ... ok
+test partial_and_3d_layouts_finite_forces_and_nonnegative_delta_na ... ok
+test two_body_force_is_translation_and_rotation_equivariant ... ok
+test collinear_screening_validation_tighter_than_standard ... ok
+test twenty_orbit_energy_and_angular_momentum_bounded ... ok
+test collimated_nonoverlapping_bodies_exercise_nonadditive_stress_path ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.33s
+
+     Running tests/hardening.rs (target/release/deps/hardening-1c9c8e43560bccb3)
+
+running 13 tests
+test body_nonfinite_velocity_is_rejected_even_when_force_is_zero ... ok
+test derive_rejects_mismatched_particle_arrays_without_panicking ... ok
+test documented_density_is_accepted ... ok
+test force_boundary_rejects_nonphysical_derived_values ... ok
+test heating_parameters_follow_the_documented_domain ... ok
+test force_boundary_rejects_stale_derived_array_lengths ... ok
+test body_species_offset_must_keep_extinction_positive ... ok
+test invalid_edits_are_rejected_and_rolled_back ... ok
+test probes_must_keep_the_contract_unit_mass_and_valid_stored_density ... ok
+test singleton_runs_still_reject_invalid_global_parameters ... ok
+test refresh_rejects_invalid_configuration_before_force_rebuild ... ok
+test stepping_revalidates_publicly_mutable_world_configuration ... ok
+test velocity_edit_rejects_corrupt_particle_storage_without_panicking ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/healpix_ref.rs (target/release/deps/healpix_ref-73454edc169c373d)
+
+running 5 tests
+test base_centres_nside1 ... ok
+test equal_area_quadrature_and_symmetry ... ok
+test nside2_children_of_face0 ... ok
+test unit_norm_all_levels ... ok
+test bounding_radius_covers_descendants ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/identities.rs (target/release/deps/identities-a7e156f023e89e8a)
+
+running 17 tests
+test disjoint_has_empty_correction ... ok
+test aeff_identity_and_thin_force ... ok
+test e_at_zero_eps_equals_p_chat ... ok
+test interior_pair_cancellation_free ... ok
+test interior_thin_uniform_sphere_field ... ok
+test large_tau_limit ... ok
+test continuity_at_contact ... ok
+test saturation_function ... ok
+test reciprocity_and_n1 ... ok
+test saturation_ratio_is_s_squared_and_d_independent ... ok
+test seeliger_single_pair ... ok
+test sweep_matches_alpha_zero_limit ... ok
+test screening_standard_mode_provisional ... ok
+test isolated_sphere_is_inert ... ok
+test v2_matches_eq10_thin_pair ... ok
+test v2_zero_velocity_reduces_to_v0 ... ok
+test closed_form_vs_forced_gl ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integrator.rs (target/release/deps/integrator-b759f09b4da362ac)
+
+running 25 tests
+test adaptive_h_matches_eq13_for_two_bodies ... ok
+test apply_globals_rederives_and_rebases ... ok
+test drag_scheme_bias_is_h_gamma_squared_over_12 ... ok
+test energy_is_labelled_non_conservative_with_drag ... ok
+test failed_step_is_atomic ... ok
+test fixed_point_nonconvergence_is_flagged_not_hidden ... ok
+test adaptive_step_is_flagged_and_bounded ... ok
+test heating_of_isolated_body_is_exact ... ok
+test orbit_expected_omega_is_sqrt2_s ... ok
+test adaptive_v1_fixed_point_converges_every_step ... ok
+test orbit_hundred_orbits ... ignored, 1e5 steps; run with --release -- --ignored
+test drag_decay_rate_matches_gamma ... ok
+test probes_are_static_and_report_effective_g ... ok
+test frame_invariance_of_drag_evolution ... ok
+test screening_three_body_short_evolution ... ignored, expensive; measure leaf counts first
+test screening_xhi_regression_bound ... ok
+test v0_uses_one_force_evaluation_per_step ... ok
+test v1_runs_one_force_evaluation_per_step ... ok
+test v1_shortcut_is_bit_identical_to_full_evaluation ... ok
+test v2_gating_rejects_large_eps_and_leaves_no_world ... ok
+test v2_orbit_converges_and_tracks_v1_at_large_vg ... ok
+test verlet_is_time_reversible_v0 ... ok
+test orbit_five_orbits ... ok
+test orbit_period_error_scales_as_h_squared ... ok
+test screening_certified_mode_meets_1e6 ... ok
+
+test result: ok. 23 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 6.19s
+
+     Running tests/invariance.rs (target/release/deps/invariance-78c9482d36d44c4c)
+
+running 5 tests
+test translating_the_cluster_leaves_forces_unchanged ... ok
+test uniform_scaling_obeys_the_dimensional_law ... ok
+test force_is_finite_and_reciprocal_for_a_dense_random_cluster ... ok
+test permuting_the_bodies_permutes_the_forces ... ok
+test rotating_the_cluster_rotates_the_forces_to_quadrature_accuracy ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+
+     Running tests/oracle_lens.rs (target/release/deps/oracle_lens-a0a890671897d7dc)
+
+running 3 tests
+test certified_mode_vs_sharp_lens_oracle ... ignored, certified-level quadrature on partial overlap: cost unmeasured
+test standard_mode_vs_sharp_lens_oracle ... ok
+test validation_mode_meets_spec_4_3_target_vs_sharp_lens_oracle ... ok
+
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/oracle_sky.rs (target/release/deps/oracle_sky-072012fda7337510)
+
+running 4 tests
+test screening_curve_certified_mode_matches_exact_oracle ... ignored, ~40 s: three 65M-leaf evaluations
+test partial_and_3d_overlap_standard_mode_matches_sky_oracle ... ok
+test partial_and_3d_overlap_validation_mode_matches_sky_oracle ... ok
+test screening_curve_matches_exact_oracle ... ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests/perf_equiv.rs (target/release/deps/perf_equiv-63a61c12c73c1ec4)
+
+running 4 tests
+test thin_fast_is_gated ... ok
+test thin_fast_matches_conforming_within_barnes_hut_error ... ok
+test parallel_hash_and_brute_are_bitwise_identical ... ok
+test hash_candidates_equal_brute ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/reference_mode.rs (target/release/deps/reference_mode-963a5b650d8cdcb8)
+
+running 4 tests
+test reference_two_body_matches_closed_form_pair ... ok
+test reference_refuses_out_of_scope_worlds ... ok
+test reference_reproduces_exact_screening_ratio ... ok
+test reference_judges_the_production_quadrature ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.83s
+
+     Running tests/scenario.rs (target/release/deps/scenario-3efe978dc2ed3ff4)
+
+running 8 tests
+test engine_validation_reaches_the_user_as_an_error ... ok
+test drag_decay_example_falls_to_one_over_e ... ok
+test json_reader_basics_and_errors ... ok
+test thin_two_body_example_is_newtonian_to_the_thin_limit_error ... ok
+test unknown_and_missing_keys_are_errors_not_defaults ... ok
+test collinear_example_gives_the_screening_ratio_of_test_c ... ok
+test every_shipped_example_parses_and_builds ... ok
+test every_shipped_scenario_runs_to_completion ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+     Running tests/spec_gaps.rs (target/release/deps/spec_gaps-638e3908cbb1b530)
+
+running 7 tests
+test invalid_mass_or_density_is_rejected ... ok
+test drag_rate_diagnostic_matches_reference ... ok
+test newtonian_and_thin_residuals_equal_one_minus_s_squared ... ok
+test equivalence_principle_eta_ep_equals_delta_to_first_order ... ok
+test screening_deviation_is_linear_in_tau_at_small_tau ... ok
+test screening_ratio_decreases_monotonically ... ok
+test screening_curve_validation_mode_tracks_exact_oracle ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.65s
+
+   Doc-tests shadowgrav_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+=== exit_code ===
+0
+=== end_utc ===
+2026-11-07T01:58:01Z

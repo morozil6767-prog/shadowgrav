@@ -1,0 +1,24 @@
+
+xwininfo: Window id: 0x1a00003 "shadowgrav — non-additive shadow-gravity research instrument"
+
+  Absolute upper-left X:  1
+  Absolute upper-left Y:  57
+  Relative upper-left X:  1
+  Relative upper-left Y:  28
+  Width: 1484
+  Height: 891
+  Depth: 24
+  Visual: 0x1d1
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x1a00002 (installed)
+  Bit Gravity State: ForgetGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: no
+  Map State: IsViewable
+  Override Redirect State: no
+  Corners:  +1+57  -435+57  -435-252  +1-252
+  -geometry 1484x891+0+29
+

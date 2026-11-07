@@ -1,0 +1,17 @@
+start_utc=2026-11-07T01:59:35Z
+python=Python 3.12.3
+sgrun=/workspace/target/release/sgrun
+test_bad_scenarios_raise (test_basic.T.test_bad_scenarios_raise) ... ok
+test_collinear_screening_ratio (test_basic.T.test_collinear_screening_ratio) ... ok
+test_repro_hash_is_stable_and_hex (test_basic.T.test_repro_hash_is_stable_and_hex) ... ok
+test_scientific_summary_only_where_r_equals_0p8_is_the_right_comparison (test_basic.T.test_scientific_summary_only_where_r_equals_0p8_is_the_right_comparison) ... ok
+test_trajectory_orbit_runs_and_samples (test_basic.T.test_trajectory_orbit_runs_and_samples) ... ok
+test_two_body_thin_is_newtonian (test_basic.T.test_two_body_thin_is_newtonian) ... ok
+test_warnings_and_aggregates_are_exposed (test_basic.T.test_warnings_and_aggregates_are_exposed) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.545s
+
+OK
+exit_code=0
+end_utc=2026-11-07T01:59:35Z

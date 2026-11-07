@@ -1,0 +1,6 @@
+===== validate-collinear_screening =====
+command: /workspace/target/release/sgrun validate /workspace/shadowgrav-core/scenarios/collinear_screening.json
+start_utc=2026-11-07T01:59:35Z
+{"valid":true,"bodies":3,"mode":"V0"}
+exit_code=0
+end_utc=2026-11-07T01:59:35Z

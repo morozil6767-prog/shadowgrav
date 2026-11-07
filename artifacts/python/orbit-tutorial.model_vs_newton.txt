@@ -1,0 +1,7 @@
+Model vs Newtonian expectation (diagnostic only)
+-----------------------------------------------
+Meaningful only for thin, well-separated, V0, α_bg=0 runs.
+Any residual is finite-size / saturation / numerical contribution of the shadow model.
+See MODEL_VS_OBSERVATION.md for the broader observational context.
+
+Estimated orbital period from separation peaks: 4.443050e+00

@@ -1,0 +1,6 @@
+===== skymap-c2 =====
+command: /workspace/target/release/sgrun skymap --case c2 --tau 5 --target 0 --focus 1 --fov 3 --validation --out /workspace/artifacts/cli/skymap-c2
+start_utc=2026-11-07T01:59:36Z
+{"provenance":{"tool":"sgrun","crate":"shadowgrav-core","version":"0.2.1","git_commit":"e89f0b1082a2","git_state":"dirty","rustc":"rustc 1.83.0 (90b35a623 2024-11-26)","os":"linux","arch":"x86_64","features":{"parallel":true,"vendored_libm":false},"threads":4,"unix_time":1794016776,"args":"skymap --case c2 --tau 5 --target 0 --focus 1 --fov 3 --validation --out /workspace/artifacts/cli/skymap-c2"},"command":"skymap","case":"c2","tau_c":5,"target":0,"projection":"zoom","half_fov":3.005022635e-1,"c":[1.0, 0.0, 0.0],"e1":[0.0, 1.0, 0.0],"e2":[0.0, 0.0, 1.0],"nlon":200,"nlat":200,"d_max":9.932544e-1,"na_min":-7.746784e-1,"d_bar":NaN,"na_mean":NaN,"discs":[{"j":1,"theta":1.001674212e-1,"centre":[1.000000000e0,0.000000000e0,0.000000000e0]},{"j":2,"theta":8.229234324e-2,"centre":[9.863939238e-1,1.643989873e-1,0.000000000e0]}]}
+exit_code=0
+end_utc=2026-11-07T01:59:36Z

@@ -1,0 +1,231 @@
+{
+  "audit": "shadowgrav baseline build/test",
+  "date_utc": "2026-11-07",
+  "host": {
+    "os": "Ubuntu 24.04.5 LTS",
+    "kernel": "Linux 6.12.113+ x86_64",
+    "cpu": "Intel Xeon, 4 cores",
+    "display": "DISPLAY=:1 X.Org 21.1.11 1920x1200; no /dev/dri"
+  },
+  "versions": {
+    "shadowgrav-core": "0.2.1",
+    "shadowgrav-ui": "0.1.0",
+    "python_package": "0.1.0",
+    "edition": "2021",
+    "rust_version_field_core": "1.70",
+    "rust_version_field_ui": "1.76",
+    "docs_intent": "v1.0 candidate, publish=false, no tag in archive"
+  },
+  "toolchains": {
+    "preinstalled_default": "rustc 1.83.0 (90b35a623 2024-11-26)",
+    "installed_for_ui": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "python": "3.12.3",
+    "oracle_venv": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "mpmath": "1.4.1",
+      "matplotlib": "3.11.2"
+    }
+  },
+  "inputs": {
+    "archive_entries": 151,
+    "extracted_files": 131,
+    "source_sha256": "093498b91580f5f4a8aa43fa8e306d9e8985b93e24bb6c387a543aabd61fa0f4",
+    "reference_pdf_sha256": "0954597eaddb66d38244bea7ddd2ab7c876af1829c7399d387d1dd7a67217375",
+    "source_tree_sha256_mismatches_after_tests": 0
+  },
+  "commands": {
+    "core_tests_rustc183": {
+      "suites": 20,
+      "totals": {
+        "passed": 122,
+        "failed": 0,
+        "ignored": 4,
+        "measured": 0,
+        "filtered": 0
+      },
+      "exit_code": 0,
+      "all_suite_status_ok": true
+    },
+    "core_serial_vendored_rustc183": {
+      "suites": 20,
+      "totals": {
+        "passed": 122,
+        "failed": 0,
+        "ignored": 4,
+        "measured": 0,
+        "filtered": 0
+      },
+      "exit_code": 0,
+      "all_suite_status_ok": true
+    },
+    "ui_tests_rustc183": {
+      "exit_code": 101,
+      "error": "calloop 0.14.5 requires Cargo edition2024; rustc/cargo 1.83.0"
+    },
+    "workspace_tests_rustc183": {
+      "exit_code": 101,
+      "error": "same edition2024 parse failure; core tests did not start"
+    },
+    "ui_tests_rustc199": {
+      "suites": 1,
+      "totals": {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered": 0
+      },
+      "exit_code": 0,
+      "all_suite_status_ok": true
+    },
+    "ui_build_rustc199": {
+      "exit_code": 0,
+      "warnings": 20
+    },
+    "workspace_tests_rustc199": {
+      "suites": 21,
+      "totals": {
+        "passed": 129,
+        "failed": 0,
+        "ignored": 4,
+        "measured": 0,
+        "filtered": 0
+      },
+      "exit_code": 0,
+      "all_suite_status_ok": true
+    },
+    "python_unittest": {
+      "exit_code": 0,
+      "ran": 7,
+      "failed": 0
+    },
+    "cli_exit_codes": [
+      "provenance 0",
+      "repro-hash 0",
+      "repro-hash-repeat 0",
+      "validate-collinear_screening 0",
+      "run-collinear_screening 0",
+      "validate-drag_decay 0",
+      "run-drag_decay 0",
+      "validate-partial_overlap_3d 0",
+      "run-partial_overlap_3d 0",
+      "validate-partial_overlap_planar 0",
+      "run-partial_overlap_planar 0",
+      "validate-saturation_pair 0",
+      "run-saturation_pair 0",
+      "validate-two_body_thin 0",
+      "run-two_body_thin 0",
+      "orbit-thin 0",
+      "orbit-tutorial 0",
+      "drag 0",
+      "scan-validation 0",
+      "scan-standard 0",
+      "skymap-c2 0",
+      "verify-default 0",
+      "verify-c 0",
+      "certify 0"
+    ]
+  },
+  "repro_hash": {
+    "documented_linux_combined": "f2e108670c118a3d",
+    "this_run_default_rustc183_and_rustc199_combined": "f2e108670c118a3d",
+    "match_documented_default": true,
+    "threads": 4,
+    "documented_threads": 2,
+    "vendored_libm_serial_rustc183_combined": "064448c38b42b9f2",
+    "vendored_differs_from_default": true,
+    "cases_that_changed_under_vendored_libm": [
+      "screen_val",
+      "orbit_v2"
+    ]
+  },
+  "numerical": {
+    "two_body_thin": {
+      "a": 0.009996266592921414,
+      "F_engine": 100.07463492138328,
+      "F_newton_hand": 100.07470997738169,
+      "absolute_gap": 7.505599840840205e-05,
+      "relative_gap": 7.499996595080393e-07,
+      "tutorial_quoted_engine": 100.07463,
+      "tutorial_quoted_hand": 100.07471,
+      "tutorial_quoted_difference": 7.5e-06,
+      "note": "Quoted engine and hand values match this run when rounded. The tutorial difference 7.5e-6 matches neither the absolute gap 7.51e-5 nor the relative gap 7.50e-7."
+    },
+    "test_a_five_orbits_verify": {
+      "period_rel_err": 1.34e-05,
+      "pdf_tolerance": 5e-06,
+      "pdf_tolerance_met": false,
+      "addendum2_bound": 1.42e-05,
+      "addendum2_bound_met": true,
+      "max_abs_dE_over_E": 3.9e-10,
+      "wh2": 3.95e-05,
+      "energy_bound_met": true,
+      "max_abs_dL_over_L": 5.18e-15,
+      "angular_momentum_bound_met": true,
+      "max_Rp": 0.0,
+      "delta_na": 0.0
+    },
+    "test_c_certified": [
+      {
+        "tau": 1,
+        "R": 0.877785028726727,
+        "abs_err_vs_exact": 4.742e-08,
+        "leaves": 64767596,
+        "seconds": 5.52,
+        "pass_1e-6": true
+      },
+      {
+        "tau": 5,
+        "R": 0.801867640635352,
+        "abs_err_vs_exact": 1.822e-07,
+        "leaves": 64767596,
+        "seconds": 5.87,
+        "pass_1e-6": true
+      },
+      {
+        "tau": 20,
+        "R": 0.799999571219568,
+        "abs_err_vs_exact": 4.308e-07,
+        "leaves": 64767596,
+        "seconds": 5.88,
+        "pass_1e-6": true
+      }
+    ],
+    "test_c_tau20_abs_R_minus_0p8": {
+      "standard": 0.00129,
+      "validation": 1.58e-05,
+      "xhi": 3.32e-06,
+      "certified_vs_exact": 4.308e-07,
+      "pdf_requires": 1e-06,
+      "only_certified_meets_pdf": true
+    },
+    "mpmath_R": {
+      "1": "0.877785076145848",
+      "5": "0.801867822859093",
+      "20": "0.800000002009972"
+    },
+    "scipy_minus_mpmath": {
+      "1": 9.99e-16,
+      "5": 6.66e-16,
+      "20": 3.77e-15
+    },
+    "screening_curve_csv_bit_identical_to_shipped": true
+  },
+  "ignored_tests_run_explicitly": {
+    "integrator_ignored_exit": 0,
+    "oracle_sky_ignored_exit": 0,
+    "oracle_lens_ignored_exit": 0,
+    "note": "Default cargo test leaves 4 tests ignored. Each was run separately and passed: orbit_hundred_orbits, screening_three_body_short_evolution, screening_curve_certified_mode_matches_exact_oracle (29.62s), certified_mode_vs_sharp_lens_oracle (0.91s)."
+  },
+  "not_run": [
+    "oracle/oracle_sky.py full 1.6e7 Fibonacci regeneration",
+    "oracle/oracle_unequal_radius.py",
+    "report/make_figures.py (would overwrite shipped figures)",
+    "scripts/local-proof.sh (inspected; not used as the evidence collector)",
+    "scripts/local-proof.ps1",
+    "GitHub Actions ci.yml and release.yml",
+    "macOS and Windows builds",
+    "UI interaction checklist beyond the startup frame"
+  ]
+}

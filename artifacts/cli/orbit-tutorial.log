@@ -1,0 +1,6 @@
+===== orbit-tutorial =====
+command: /workspace/target/release/sgrun orbit --tau 1e-4 --steps 400 --orbits 2 --stride 20 --out /workspace/artifacts/cli/orbit-tutorial.csv
+start_utc=2026-11-07T01:59:35Z
+{"provenance":{"tool":"sgrun","crate":"shadowgrav-core","version":"0.2.1","git_commit":"e89f0b1082a2","git_state":"dirty","rustc":"rustc 1.83.0 (90b35a623 2024-11-26)","os":"linux","arch":"x86_64","features":{"parallel":true,"vendored_libm":false},"threads":4,"unix_time":1794016775,"args":"orbit --tau 1e-4 --steps 400 --orbits 2 --stride 20 --out /workspace/artifacts/cli/orbit-tutorial.csv"},"command":"orbit","tau_c":0.0001,"mode":"V0","v_g":1000,"omega_expected":1.414160530778690e0,"period_expected":4.443049548073462e0,"h":1.110762e-2,"steps":800,"max_dE_rel":1.521e-8,"max_dL_rel":2.826e-15,"max_dP_rel":0.000e0,"max_Rp_shadow":0.000e0,"energy_label":"Conserved","fp_nonconverged_steps":0,"seconds":0.03}
+exit_code=0
+end_utc=2026-11-07T01:59:35Z

@@ -1,0 +1,9 @@
+orbit_forces       e60572a3d079862d
+orbit_state_200    c643d780b40120fd
+screen_std         9eee9748d2156d26
+screen_val         5dd3fd3f4ebe8c39
+overlap3d_std      2de33d701849ff93
+orbit_v1           3b51b87fbd2ee11d
+orbit_v2           35e7dd4558237473
+combined           f2e108670c118a3d
+{"provenance":{"tool":"sgrun","crate":"shadowgrav-core","version":"0.2.1","git_commit":"e89f0b1082a2","git_state":"dirty","rustc":"rustc 1.99.1 (58cf8f9c3 2026-10-13)","os":"linux","arch":"x86_64","features":{"parallel":true,"vendored_libm":false},"threads":4,"unix_time":1794017232,"args":"repro-hash"},"command":"repro-hash","combined":"f2e108670c118a3d"}

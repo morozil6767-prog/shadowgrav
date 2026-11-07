@@ -1,0 +1,719 @@
+=== command ===
+rustup run stable cargo test --release --locked -p shadowgrav-ui -- --test-threads=4
+CARGO_TARGET_DIR=/tmp/sg-stable
+=== rustc ===
+rustc 1.99.1 (58cf8f9c3 2026-10-13)
+binary: rustc
+commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+commit-date: 2026-10-13
+host: x86_64-unknown-linux-gnu
+release: 1.99.1
+LLVM version: 23.1.1
+=== start_utc ===
+2026-11-07T02:01:51Z
+    Blocking waiting for file lock on package cache
+    Updating crates.io index
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+ Downloading crates ...
+  Downloaded percent-encoding v2.3.2
+  Downloaded proc-macro2 v1.0.107
+  Downloaded wayland-scanner v0.31.11
+  Downloaded litrs v1.0.1
+  Downloaded renderdoc-sys v1.1.0
+  Downloaded utf8_iter v1.1.0
+  Downloaded potential_utf v0.1.6
+  Downloaded rand_core v0.6.4
+  Downloaded thiserror v2.0.21
+  Downloaded wayland-protocols-experimental v20250721.0.1
+  Downloaded zbus_xml v4.0.0
+  Downloaded polling v3.11.0
+  Downloaded quick-xml v0.41.0
+  Downloaded webbrowser v1.2.6
+  Downloaded once_cell v1.21.4
+  Downloaded ppv-lite86 v0.2.21
+  Downloaded smol_str v0.2.2
+  Downloaded num-traits v0.2.19
+  Downloaded futures-io v0.3.34
+  Downloaded zerovec-derive v0.11.7
+  Downloaded getrandom v0.2.17
+  Downloaded glutin-winit v0.5.0
+  Downloaded gpu-alloc v0.6.2
+  Downloaded unicode-width v0.1.14
+  Downloaded accesskit_atspi_common v0.9.3
+  Downloaded find-msvc-tools v0.1.15
+  Downloaded litemap v0.8.3
+  Downloaded hex v0.4.3
+  Downloaded yoke v0.8.4
+  Downloaded zbus_macros v4.4.0
+  Downloaded accesskit_unix v0.12.3
+  Downloaded flate2 v1.1.10
+  Downloaded futures-lite v2.6.1
+  Downloaded futures-util v0.3.34
+  Downloaded getrandom v0.3.4
+  Downloaded idna v1.1.0
+  Downloaded miniz_oxide v0.8.9
+  Downloaded miniz_oxide v0.9.1
+  Downloaded xml-rs v0.8.29
+  Downloaded adler2 v2.0.1
+  Downloaded futures-sink v0.3.34
+  Downloaded hexf-parse v0.2.1
+  Downloaded scoped-tls v1.0.1
+  Downloaded parking_lot_core v0.9.12
+  Downloaded rustc-hash v2.1.3
+  Downloaded wayland-csd-frame v0.3.0
+  Downloaded synstructure v0.14.0
+  Downloaded zvariant_utils v2.1.0
+  Downloaded foldhash v0.1.5
+  Downloaded glutin_egl_sys v0.7.1
+  Downloaded gpu-descriptor-types v0.2.0
+  Downloaded fdeflate v0.3.7
+  Downloaded libloading v0.8.9
+  Downloaded scopeguard v1.2.0
+  Downloaded toml_datetime v1.1.2+spec-1.1.0
+  Downloaded gpu-alloc-types v0.3.1
+  Downloaded jobserver v0.1.35
+  Downloaded zvariant_derive v4.2.0
+  Downloaded accesskit v0.16.3
+  Downloaded ahash v0.8.12
+  Downloaded icu_provider v2.4.0
+  Downloaded thiserror-impl v2.0.21
+  Downloaded gethostname v1.1.0
+  Downloaded zbus-lockstep v0.4.4
+  Downloaded generic-array v0.14.7
+  Downloaded ab_glyph_rasterizer v0.1.10
+  Downloaded gl_generator v0.14.0
+  Downloaded icu_properties v2.4.0
+  Downloaded writeable v0.6.4
+  Downloaded xkbcommon-dl v0.4.2
+  Downloaded futures-task v0.3.34
+  Downloaded glutin_glx_sys v0.6.1
+  Downloaded form_urlencoded v1.2.2
+  Downloaded lock_api v0.4.14
+  Downloaded zbus-lockstep-macros v0.4.4
+  Downloaded futures-macro v0.3.34
+  Downloaded khronos-egl v6.0.0
+  Downloaded glutin v0.32.3
+  Downloaded gpu-descriptor v0.3.2
+  Downloaded indexmap v2.14.2
+  Downloaded memmap2 v0.9.12
+  Downloaded pin-project-lite v0.2.17
+  Downloaded quote v1.0.47
+  Downloaded rustc-hash v1.1.0
+  Downloaded tracing v0.1.44
+  Downloaded wayland-protocols-wlr v0.3.12
+  Downloaded x11rb v0.13.2
+  Downloaded xcursor v0.3.11
+  Downloaded zbus_names v3.0.0
+  Downloaded zerofrom v0.1.8
+  Downloaded zerotrie v0.2.5
+  Downloaded ab_glyph v0.2.32
+  Downloaded accesskit_consumer v0.24.3
+  Downloaded async-broadcast v0.7.2
+  Downloaded fastrand v2.5.0
+  Downloaded futures-core v0.3.34
+  Downloaded icu_normalizer_data v2.4.0
+  Downloaded log v0.4.35
+  Downloaded memchr v2.8.3
+  Downloaded xdg-home v1.3.0
+  Downloaded hashbrown v0.17.1
+  Downloaded immutable-chunkmap v2.1.5
+  Downloaded nix v0.29.0
+  Downloaded x11-dl v2.21.0
+  Downloaded zerovec v0.11.9
+  Downloaded icu_collections v2.4.0
+  Downloaded icu_locale_core v2.4.0
+  Downloaded icu_properties_data v2.4.0
+  Downloaded idna_adapter v1.2.2
+  Downloaded xkeysym v0.2.1
+  Downloaded zlib-rs v0.6.8
+  Downloaded hashbrown v0.15.5
+  Downloaded nohash-hasher v0.2.0
+  Downloaded parking_lot v0.12.5
+  Downloaded zbus v4.4.0
+  Downloaded glow v0.14.2
+  Downloaded x11rb-protocol v0.13.2
+  Downloaded image v0.25.10
+  Downloaded unicode-xid v0.2.6
+  Downloaded zerofrom-derive v0.1.8
+  Downloaded glow v0.13.1
+  Downloaded rayon-core v1.13.0
+  Downloaded rand v0.8.8
+  Downloaded libc v0.2.191
+  Downloaded pkg-config v0.3.34
+  Downloaded profiling v1.0.18
+  Downloaded smithay-client-toolkit v0.20.0
+  Downloaded tiny-skia-path v0.11.4
+  Downloaded linux-raw-sys v0.4.15
+  Downloaded ordered-stream v0.2.0
+  Downloaded wayland-protocols v0.32.13
+  Downloaded atspi-proxies v0.6.0
+  Downloaded zerocopy v0.8.63
+  Downloaded cfg-if v1.0.5
+  Downloaded naga v22.1.0
+  Downloaded arboard v3.7.0
+  Downloaded block-buffer v0.10.4
+  Downloaded dpi v0.1.2
+  Downloaded icu_normalizer v2.4.0
+  Downloaded moxcms v0.8.1
+  Downloaded sctk-adwaita v0.10.1
+  Downloaded serde_core v1.0.229
+  Downloaded static_assertions v1.1.0
+  Downloaded wgpu-types v22.0.0
+  Downloaded accesskit_winit v0.22.4
+  Downloaded async-lock v3.5.0
+  Downloaded crc32fast v1.5.4
+  Downloaded khronos_api v3.1.0
+  Downloaded zvariant v4.2.0
+  Downloaded bytemuck v1.25.2
+  Downloaded atspi-common v0.6.0
+  Downloaded either v1.19.0
+  Downloaded atomic-waker v1.1.2
+  Downloaded enumflags2_derive v0.7.12
+  Downloaded memoffset v0.9.1
+  Downloaded rayon v1.12.0
+  Downloaded rustix v1.1.6
+  Downloaded yoke-derive v0.8.4
+  Downloaded async-trait v0.1.92
+  Downloaded arrayvec v0.7.8
+  Downloaded version_check v0.9.5
+  Downloaded url v2.5.8
+  Downloaded cc v1.11.0
+  Downloaded cfg_aliases v0.2.2
+  Downloaded wayland-protocols-plasma v0.3.12
+  Downloaded crossbeam-epoch v0.9.21
+  Downloaded calloop-wayland-source v0.3.0
+  Downloaded event-listener-strategy v0.5.4
+  Downloaded crypto-common v0.1.7
+  Downloaded egui-winit v0.29.1
+  Downloaded equivalent v1.0.3
+  Downloaded as-raw-xcb-connection v1.0.1
+  Downloaded bit-set v0.6.0
+  Downloaded downcast-rs v1.2.1
+  Downloaded event-listener v5.4.2
+  Downloaded cfg_aliases v0.1.1
+  Downloaded blocking v1.7.0
+  Downloaded eframe v0.29.1
+  Downloaded smithay-client-toolkit v0.19.2
+  Downloaded bit-vec v0.7.0
+  Downloaded errno v0.3.14
+  Downloaded calloop-wayland-source v0.4.1
+  Downloaded rustix v0.38.44
+  Downloaded atspi v0.22.0
+  Downloaded linux-raw-sys v0.12.1
+  Downloaded strict-num v0.1.1
+  Downloaded unicode-ident v1.0.27
+  Downloaded ash v0.38.0+1.3.281
+  Downloaded ecolor v0.29.1
+  Downloaded async-executor v1.14.1
+  Downloaded async-channel v2.5.0
+  Downloaded concurrent-queue v2.5.0
+  Downloaded egui_glow v0.29.1
+  Downloaded pxfm v0.1.30
+  Downloaded sha1 v0.10.7
+  Downloaded wgpu-hal v22.0.0
+  Downloaded wayland-backend v0.3.17
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded epaint v0.29.1
+  Downloaded calloop v0.13.0
+  Downloaded cpufeatures v0.2.17
+  Downloaded async-fs v2.2.0
+  Downloaded cursor-icon v1.2.0
+  Downloaded egui v0.29.1
+  Downloaded epaint_default_fonts v0.29.1
+  Downloaded async-task v4.7.1
+  Downloaded egui-wgpu v0.29.1
+  Downloaded tracing-core v0.1.36
+  Downloaded parking v2.2.1
+  Downloaded utf_types v1.0.0
+  Downloaded rand_chacha v0.3.1
+  Downloaded serde_derive v1.0.229
+  Downloaded proc-macro-crate v3.5.0
+  Downloaded tinystr v0.8.5
+  Downloaded async-io v2.6.0
+  Downloaded stable_deref_trait v1.2.1
+  Downloaded winnow v1.0.5
+  Downloaded bitflags v2.13.2
+  Downloaded wgpu v22.1.0
+  Downloaded toml_parser v1.1.5+spec-1.1.0
+  Downloaded smallvec v1.16.4
+  Downloaded typenum v1.20.1
+  Downloaded wayland-protocols-misc v0.3.12
+  Downloaded thiserror v1.0.69
+  Downloaded digest v0.10.7
+  Downloaded piper v0.2.5
+  Downloaded quick-xml v0.30.0
+  Downloaded emath v0.29.1
+  Downloaded termcolor v1.4.1
+  Downloaded tracing-attributes v0.1.31
+  Downloaded spirv v0.3.0+sdk-1.3.268.0
+  Downloaded slab v0.4.12
+  Downloaded wayland-sys v0.31.11
+  Downloaded serde_repr v0.1.21
+  Downloaded web-time v1.1.0
+  Downloaded smithay-clipboard v0.7.3
+  Downloaded tiny-skia v0.11.4
+  Downloaded type-map v0.5.1
+  Downloaded toml_edit v0.25.18+spec-1.1.0
+  Downloaded syn v2.0.119
+  Downloaded displaydoc v0.2.7
+  Downloaded bytemuck_derive v1.12.1
+  Downloaded atspi-connection v0.6.0
+  Downloaded calloop v0.14.5
+  Downloaded byteorder-lite v0.1.0
+  Downloaded document-features v0.2.12
+  Downloaded dlib v0.5.3
+  Downloaded codespan-reporting v0.11.1
+  Downloaded endi v1.1.1
+  Downloaded enumflags2 v0.7.12
+  Downloaded arrayref v0.3.9
+  Downloaded ttf-parser v0.25.1
+  Downloaded owned_ttf_parser v0.25.1
+  Downloaded wayland-cursor v0.31.14
+  Downloaded serde v1.0.229
+  Downloaded simd-adler32 v0.3.10
+  Downloaded syn v3.0.9
+  Downloaded winit v0.30.13
+  Downloaded raw-window-handle v0.6.2
+  Downloaded wgpu-core v22.1.0
+  Downloaded png v0.18.1
+  Downloaded wayland-client v0.31.15
+  Downloaded thiserror-impl v1.0.69
+  Downloaded shlex v2.0.1
+  Downloaded autocfg v1.5.1
+  Downloaded crossbeam-utils v0.8.23
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling cfg-if v1.0.5
+   Compiling bitflags v2.13.2
+   Compiling once_cell v1.21.4
+   Compiling log v0.4.35
+   Compiling libc v0.2.191
+   Compiling rustix v1.1.6
+   Compiling linux-raw-sys v0.12.1
+   Compiling smallvec v1.16.4
+   Compiling memchr v2.8.3
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling serde_core v1.0.229
+   Compiling pin-project-lite v0.2.17
+   Compiling pkg-config v0.3.34
+   Compiling serde v1.0.229
+   Compiling libloading v0.8.9
+   Compiling version_check v0.9.5
+   Compiling equivalent v1.0.3
+   Compiling winnow v1.0.5
+   Compiling hashbrown v0.17.1
+   Compiling serde_derive v1.0.229
+   Compiling indexmap v2.14.2
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling dlib v0.5.3
+   Compiling wayland-sys v0.31.11
+   Compiling crossbeam-utils v0.8.23
+   Compiling shlex v2.0.1
+   Compiling autocfg v1.5.1
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling find-msvc-tools v0.1.15
+   Compiling cc v1.11.0
+   Compiling toml_edit v0.25.18+spec-1.1.0
+   Compiling cfg_aliases v0.2.2
+   Compiling proc-macro-crate v3.5.0
+   Compiling wayland-backend v0.3.17
+   Compiling enumflags2_derive v0.7.12
+   Compiling polling v3.11.0
+   Compiling zvariant_utils v2.1.0
+   Compiling zerocopy v0.8.63
+   Compiling scoped-tls v1.0.1
+   Compiling parking v2.2.1
+   Compiling downcast-rs v1.2.1
+   Compiling zvariant_derive v4.2.0
+   Compiling synstructure v0.14.0
+   Compiling quick-xml v0.41.0
+   Compiling futures-core v0.3.34
+   Compiling wayland-client v0.31.15
+   Compiling slab v0.4.12
+   Compiling wayland-scanner v0.31.11
+   Compiling zerofrom-derive v0.1.8
+   Compiling tracing-attributes v0.1.31
+   Compiling tracing-core v0.1.36
+   Compiling futures-io v0.3.34
+   Compiling tracing v0.1.44
+   Compiling zerofrom v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling event-listener v5.4.2
+   Compiling generic-array v0.14.7
+   Compiling fastrand v2.5.0
+   Compiling stable_deref_trait v1.2.1
+   Compiling event-listener-strategy v0.5.4
+   Compiling concurrent-queue v2.5.0
+   Compiling bytemuck_derive v1.12.1
+   Compiling yoke v0.8.4
+   Compiling typenum v1.20.1
+   Compiling futures-lite v2.6.1
+   Compiling bytemuck v1.25.2
+   Compiling enumflags2 v0.7.12
+   Compiling memoffset v0.9.1
+   Compiling zerovec-derive v0.11.7
+   Compiling endi v1.1.1
+   Compiling static_assertions v1.1.0
+   Compiling zvariant v4.2.0
+   Compiling zerovec v0.11.9
+   Compiling wayland-protocols v0.32.13
+   Compiling displaydoc v0.2.7
+   Compiling getrandom v0.2.17
+   Compiling thiserror v1.0.69
+   Compiling async-task v4.7.1
+   Compiling atomic-waker v1.1.2
+   Compiling piper v0.2.5
+   Compiling rand_core v0.6.4
+   Compiling zbus_names v3.0.0
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling async-channel v2.5.0
+   Compiling quick-xml v0.30.0
+   Compiling ppv-lite86 v0.2.21
+   Compiling nix v0.29.0
+   Compiling async-io v2.6.0
+   Compiling thiserror-impl v1.0.69
+   Compiling khronos_api v3.1.0
+   Compiling zbus_xml v4.0.0
+   Compiling rand_chacha v0.3.1
+   Compiling blocking v1.7.0
+   Compiling digest v0.10.7
+   Compiling async-lock v3.5.0
+   Compiling futures-macro v0.3.34
+   Compiling futures-sink v0.3.34
+   Compiling cpufeatures v0.2.17
+   Compiling arrayvec v0.7.8
+   Compiling futures-task v0.3.34
+   Compiling getrandom v0.3.4
+   Compiling rustix v0.38.44
+   Compiling ttf-parser v0.25.1
+   Compiling futures-util v0.3.34
+   Compiling owned_ttf_parser v0.25.1
+   Compiling sha1 v0.10.7
+   Compiling async-fs v2.2.0
+   Compiling rand v0.8.8
+   Compiling zbus-lockstep v0.4.4
+   Compiling async-executor v1.14.1
+   Compiling tinystr v0.8.5
+   Compiling async-broadcast v0.7.2
+   Compiling ordered-stream v0.2.0
+   Compiling zbus_macros v4.4.0
+   Compiling async-trait v0.1.92
+   Compiling serde_repr v0.1.21
+   Compiling ahash v0.8.12
+   Compiling xdg-home v1.3.0
+   Compiling linux-raw-sys v0.4.15
+   Compiling xkeysym v0.2.1
+   Compiling xml-rs v0.8.29
+   Compiling utf_types v1.0.0
+   Compiling writeable v0.6.4
+   Compiling xcursor v0.3.11
+   Compiling cursor-icon v1.2.0
+   Compiling litemap v0.8.3
+   Compiling hex v0.4.3
+   Compiling ab_glyph_rasterizer v0.1.10
+   Compiling ab_glyph v0.2.32
+   Compiling zbus v4.4.0
+   Compiling icu_locale_core v2.4.0
+   Compiling wayland-cursor v0.31.14
+   Compiling wayland-csd-frame v0.3.0
+   Compiling utf8_iter v1.1.0
+   Compiling gl_generator v0.14.0
+   Compiling zbus-lockstep-macros v0.4.4
+   Compiling wayland-protocols-wlr v0.3.12
+   Compiling zerotrie v0.2.5
+   Compiling potential_utf v0.1.6
+   Compiling x11-dl v2.21.0
+   Compiling memmap2 v0.9.12
+   Compiling parking_lot_core v0.9.12
+   Compiling percent-encoding v2.3.2
+   Compiling icu_properties_data v2.4.0
+   Compiling icu_normalizer_data v2.4.0
+   Compiling calloop v0.13.0
+   Compiling atspi-common v0.6.0
+   Compiling icu_collections v2.4.0
+   Compiling icu_provider v2.4.0
+   Compiling smithay-client-toolkit v0.19.2
+   Compiling accesskit v0.16.3
+   Compiling arrayref v0.3.9
+   Compiling strict-num v0.1.1
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling tiny-skia-path v0.11.4
+   Compiling calloop-wayland-source v0.3.0
+   Compiling gethostname v1.1.0
+   Compiling as-raw-xcb-connection v1.0.1
+   Compiling simd-adler32 v0.3.10
+   Compiling x11rb-protocol v0.13.2
+   Compiling icu_normalizer v2.4.0
+   Compiling icu_properties v2.4.0
+   Compiling parking_lot v0.12.5
+   Compiling atspi-proxies v0.6.0
+   Compiling x11rb v0.13.2
+   Compiling tiny-skia v0.11.4
+   Compiling immutable-chunkmap v2.1.5
+   Compiling emath v0.29.1
+   Compiling winit v0.30.13
+   Compiling crc32fast v1.5.4
+   Compiling crossbeam-epoch v0.9.21
+   Compiling thiserror v2.0.21
+   Compiling adler2 v2.0.1
+   Compiling raw-window-handle v0.6.2
+   Compiling ecolor v0.29.1
+   Compiling accesskit_consumer v0.24.3
+   Compiling sctk-adwaita v0.10.1
+   Compiling atspi-connection v0.6.0
+   Compiling idna_adapter v1.2.2
+   Compiling glutin_egl_sys v0.7.1
+   Compiling glutin_glx_sys v0.6.1
+   Compiling xkbcommon-dl v0.4.2
+   Compiling wayland-protocols-plasma v0.3.12
+   Compiling calloop v0.14.5
+   Compiling num-traits v0.2.19
+   Compiling thiserror-impl v2.0.21
+   Compiling crossbeam-deque v0.8.8
+   Compiling smithay-client-toolkit v0.20.0
+   Compiling dpi v0.1.2
+   Compiling smol_str v0.2.2
+   Compiling epaint_default_fonts v0.29.1
+   Compiling nohash-hasher v0.2.0
+   Compiling epaint v0.29.1
+   Compiling calloop-wayland-source v0.4.1
+   Compiling atspi v0.22.0
+   Compiling idna v1.1.0
+   Compiling accesskit_atspi_common v0.9.3
+   Compiling miniz_oxide v0.9.1
+   Compiling form_urlencoded v1.2.2
+   Compiling wayland-protocols-misc v0.3.12
+   Compiling wayland-protocols-experimental v20250721.0.1
+   Compiling glutin v0.32.3
+   Compiling rayon-core v1.13.0
+   Compiling flate2 v1.1.10
+   Compiling url v2.5.8
+   Compiling accesskit_unix v0.12.3
+   Compiling egui v0.29.1
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling glutin-winit v0.5.0
+   Compiling pxfm v0.1.30
+   Compiling moxcms v0.8.1
+   Compiling png v0.18.1
+   Compiling accesskit_winit v0.22.4
+   Compiling smithay-clipboard v0.7.3
+   Compiling webbrowser v1.2.6
+   Compiling arboard v3.7.0
+   Compiling either v1.19.0
+   Compiling web-time v1.1.0
+   Compiling shadowgrav-core v0.2.1 (/workspace/shadowgrav-core)
+   Compiling glow v0.14.2
+   Compiling byteorder-lite v0.1.0
+   Compiling litrs v1.0.1
+   Compiling document-features v0.2.12
+   Compiling image v0.25.10
+   Compiling egui_glow v0.29.1
+   Compiling egui-winit v0.29.1
+   Compiling rayon v1.12.0
+   Compiling eframe v0.29.1
+   Compiling shadowgrav-ui v0.1.0 (/workspace/shadowgrav-ui)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/app.rs:153:56
+    |
+153 |         p.add(egui::Shape::line(pts, egui::Stroke::new(1.3, color)));
+    |                                                        ^^^ help: explicitly specify the type as `f32`: `1.3_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/app.rs:172:66
+    |
+172 | ...:new(1.5, col)).rounding(14.0)
+    |         ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: use of deprecated associated function `eframe::egui::ComboBox::from_id_source`: Renamed id_salt
+   --> shadowgrav-ui/src/app.rs:378:37
+    |
+378 |                     egui::ComboBox::from_id_source("quad_tier")
+    |                                     ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/app.rs:457:93
+    |
+457 | ...:new(1.0, col.gamma_multiply(0.6)))
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:134:68
+    |
+134 | ...:new(1.0, Color32::from_white_alpha(200)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:151:32
+    |
+151 |         let grid = Stroke::new(1.0, Color32::from_white_alpha(28));
+    |                                ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:152:31
+    |
+152 |         let rim = Stroke::new(1.2, Color32::from_white_alpha(90));
+    |                               ^^^ help: explicitly specify the type as `f32`: `1.2_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:185:90
+    |
+185 | ...se { 1.0 }, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:199:46
+    |
+199 |                         let st = Stroke::new(1.6, col);
+    |                                              ^^^ help: explicitly specify the type as `f32`: `1.6_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:156:101
+    |
+156 | ...:new(1.0, col)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:162:92
+    |
+162 | ...:new(1.0, col))); }
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:187:59
+    |
+187 | ...:new(1.0, Color32::from_white_alpha(90)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:188:97
+    |
+188 | ...:new(1.5, Color32::YELLOW)); }
+    |         ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:229:71
+    |
+229 | ...:new(1.5, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:232:124
+    |
+232 | ...:new(1.3, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.3_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:233:124
+    |
+233 | ...:new(1.3, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.3_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:283:62
+    |
+283 | ...:new(1.0, Color32::from_gray(70)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:295:54
+    |
+295 |             painter.line_segment([o, e], Stroke::new(1.5, *col));
+    |                                                      ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:303:103
+    |
+303 | ...:new(2.0, Color32::LIGHT_GRAY));
+    |         ^^^ help: explicitly specify the type as `f32`: `2.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: function `conformance_summary` is never used
+   --> shadowgrav-ui/src/export.rs:179:8
+    |
+179 | pub fn conformance_summary(snap: &FrameSnapshot) -> String {
+    |        ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `shadowgrav-ui` (bin "shadowgrav-ui" test) generated 20 warnings (run `cargo fix --bin "shadowgrav-ui" -p shadowgrav-ui --tests` to apply 18 suggestions)
+    Finished `release` profile [optimized] target(s) in 1m 41s
+     Running unittests src/main.rs (/tmp/sg-stable/release/deps/shadowgrav_ui-c44016f9bde5368d)
+
+running 7 tests
+test export::tests::export_writes_rectangular_csv_and_json_metadata_sidecar ... ok
+test sim::tests::oracle_presets_match_recorded_delta_na ... ok
+test sim::tests::bad_edit_is_rolled_back_and_flagged_red ... ok
+test sim::tests::load_preset_bumps_generation_and_pauses ... ok
+test sim::tests::every_preset_builds_and_steps ... ok
+test sim::tests::sim_thread_runs_and_publishes_green_orbit ... ok
+test sim::tests::sky_map_follows_target_and_focus_commands ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
+=== exit_code ===
+0
+=== end_utc ===
+2026-11-07T02:03:33Z
+ls: cannot access '/tmp/sg-stable/release/shadowgrav-ui': No such file or directory

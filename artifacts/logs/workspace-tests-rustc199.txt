@@ -1,0 +1,452 @@
+=== command ===
+rustup run stable cargo test --release --locked --workspace -- --test-threads=4
+=== start_utc ===
+2026-11-07T02:07:13Z
+rustc 1.99.1 (58cf8f9c3 2026-10-13)
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling shadowgrav-core v0.2.1 (/workspace/shadowgrav-core)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/app.rs:153:56
+    |
+153 |         p.add(egui::Shape::line(pts, egui::Stroke::new(1.3, color)));
+    |                                                        ^^^ help: explicitly specify the type as `f32`: `1.3_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/app.rs:172:66
+    |
+172 | ...:new(1.5, col)).rounding(14.0)
+    |         ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: use of deprecated associated function `eframe::egui::ComboBox::from_id_source`: Renamed id_salt
+   --> shadowgrav-ui/src/app.rs:378:37
+    |
+378 |                     egui::ComboBox::from_id_source("quad_tier")
+    |                                     ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/app.rs:457:93
+    |
+457 | ...:new(1.0, col.gamma_multiply(0.6)))
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:134:68
+    |
+134 | ...:new(1.0, Color32::from_white_alpha(200)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:151:32
+    |
+151 |         let grid = Stroke::new(1.0, Color32::from_white_alpha(28));
+    |                                ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:152:31
+    |
+152 |         let rim = Stroke::new(1.2, Color32::from_white_alpha(90));
+    |                               ^^^ help: explicitly specify the type as `f32`: `1.2_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:185:90
+    |
+185 | ...se { 1.0 }, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/skyview.rs:199:46
+    |
+199 |                         let st = Stroke::new(1.6, col);
+    |                                              ^^^ help: explicitly specify the type as `f32`: `1.6_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:156:101
+    |
+156 | ...:new(1.0, col)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:162:92
+    |
+162 | ...:new(1.0, col))); }
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:187:59
+    |
+187 | ...:new(1.0, Color32::from_white_alpha(90)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:188:97
+    |
+188 | ...:new(1.5, Color32::YELLOW)); }
+    |         ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:229:71
+    |
+229 | ...:new(1.5, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:232:124
+    |
+232 | ...:new(1.3, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.3_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:233:124
+    |
+233 | ...:new(1.3, col));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.3_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:283:62
+    |
+283 | ...:new(1.0, Color32::from_gray(70)));
+    |         ^^^ help: explicitly specify the type as `f32`: `1.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:295:54
+    |
+295 |             painter.line_segment([o, e], Stroke::new(1.5, *col));
+    |                                                      ^^^ help: explicitly specify the type as `f32`: `1.5_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> shadowgrav-ui/src/view3d.rs:303:103
+    |
+303 | ...:new(2.0, Color32::LIGHT_GRAY));
+    |         ^^^ help: explicitly specify the type as `f32`: `2.0_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: function `conformance_summary` is never used
+   --> shadowgrav-ui/src/export.rs:179:8
+    |
+179 | pub fn conformance_summary(snap: &FrameSnapshot) -> String {
+    |        ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `shadowgrav-ui` (bin "shadowgrav-ui" test) generated 20 warnings (run `cargo fix --bin "shadowgrav-ui" -p shadowgrav-ui --tests` to apply 18 suggestions)
+    Finished `release` profile [optimized] target(s) in 2.52s
+     Running unittests src/lib.rs (/tmp/sg-stable/release/deps/shadowgrav_core-891f416d18c0c69b)
+
+running 4 tests
+test skymap::tests::two_body_has_no_nonadditive_part_and_deficit_peaks_toward_the_other_body ... ok
+test skymap::tests::projection_roundtrip ... ok
+test skymap::tests::nonadditive_part_is_never_positive ... ok
+test skymap::tests::nonadditive_support_is_exactly_the_overlap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/bin/bench.rs (/tmp/sg-stable/release/deps/bench-b1812c289beb753b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/converge.rs (/tmp/sg-stable/release/deps/converge-3f6f480139446a97)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/sgrun.rs (/tmp/sg-stable/release/deps/sgrun-3246281eae92e06a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/verify.rs (/tmp/sg-stable/release/deps/verify-f65155d4c0c9f91e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diag_gaps.rs (/tmp/sg-stable/release/deps/diag_gaps-e76f67bc3b5e5c91)
+
+running 15 tests
+test midrun_non_finite_force_aborts_the_step_and_rolls_back ... ok
+test aggregates_match_per_body_values_and_distinguish_not_measured ... ok
+test midrun_overflow_in_the_drift_aborts_the_step ... ok
+test midrun_nan_velocity_aborts_the_step_and_rolls_back ... ok
+test non_finite_force_from_a_live_edit_is_rolled_back ... ok
+test out_of_table_parameters_produce_warnings ... ok
+test seeliger_check_refuses_bad_input ... ok
+test seeliger_paired_run_matches_exp_minus_alpha_d ... ok
+test reference_diag_out_of_scope_is_not_a_pass ... ok
+test tau_max_exact_for_isolated_and_collinear_occluders ... ok
+test total_heating_power_is_the_sum_of_per_body_powers ... ok
+test tau_max_respects_its_bounds_and_leaves_only_raise_it ... ok
+test v2_valid_flag_reports_fast_bodies_in_every_mode ... ok
+test snapshot_extras_are_opt_in ... ok
+test reference_diag_reports_the_engine_error ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/edge_cases.rs (/tmp/sg-stable/release/deps/edge_cases-510625652ea5e747)
+
+running 3 tests
+test non_finite_positions_are_rejected ... ok
+test cap_hit_flag_fires_when_the_cap_is_too_coarse ... ok
+test coincident_centres_contribute_no_pair_force ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/geometry_suite.rs (/tmp/sg-stable/release/deps/geometry_suite-6f6e8ccc9a72fcbe)
+
+running 9 tests
+test collinear_screening_standard_within_provisional ... ok
+test geff_matches_expected_when_disjoint ... ok
+test n12_ring_momentum_residual_under_validation ... ok
+test partial_and_3d_layouts_finite_forces_and_nonnegative_delta_na ... ok
+test advance_100_steps_n7_no_nonfinite ... ok
+test two_body_force_is_translation_and_rotation_equivariant ... ok
+test collinear_screening_validation_tighter_than_standard ... ok
+test twenty_orbit_energy_and_angular_momentum_bounded ... ok
+test collimated_nonoverlapping_bodies_exercise_nonadditive_stress_path ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.33s
+
+     Running tests/hardening.rs (/tmp/sg-stable/release/deps/hardening-2f47594073f7d623)
+
+running 13 tests
+test derive_rejects_mismatched_particle_arrays_without_panicking ... ok
+test body_species_offset_must_keep_extinction_positive ... ok
+test body_nonfinite_velocity_is_rejected_even_when_force_is_zero ... ok
+test force_boundary_rejects_nonphysical_derived_values ... ok
+test force_boundary_rejects_stale_derived_array_lengths ... ok
+test documented_density_is_accepted ... ok
+test probes_must_keep_the_contract_unit_mass_and_valid_stored_density ... ok
+test heating_parameters_follow_the_documented_domain ... ok
+test singleton_runs_still_reject_invalid_global_parameters ... ok
+test refresh_rejects_invalid_configuration_before_force_rebuild ... ok
+test invalid_edits_are_rejected_and_rolled_back ... ok
+test stepping_revalidates_publicly_mutable_world_configuration ... ok
+test velocity_edit_rejects_corrupt_particle_storage_without_panicking ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/healpix_ref.rs (/tmp/sg-stable/release/deps/healpix_ref-6b8895d8f5aeda0e)
+
+running 5 tests
+test nside2_children_of_face0 ... ok
+test base_centres_nside1 ... ok
+test equal_area_quadrature_and_symmetry ... ok
+test unit_norm_all_levels ... ok
+test bounding_radius_covers_descendants ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/identities.rs (/tmp/sg-stable/release/deps/identities-88ecfc893b818490)
+
+running 17 tests
+test aeff_identity_and_thin_force ... ok
+test continuity_at_contact ... ok
+test disjoint_has_empty_correction ... ok
+test interior_pair_cancellation_free ... ok
+test interior_thin_uniform_sphere_field ... ok
+test large_tau_limit ... ok
+test e_at_zero_eps_equals_p_chat ... ok
+test saturation_function ... ok
+test isolated_sphere_is_inert ... ok
+test reciprocity_and_n1 ... ok
+test seeliger_single_pair ... ok
+test sweep_matches_alpha_zero_limit ... ok
+test v2_matches_eq10_thin_pair ... ok
+test screening_standard_mode_provisional ... ok
+test saturation_ratio_is_s_squared_and_d_independent ... ok
+test closed_form_vs_forced_gl ... ok
+test v2_zero_velocity_reduces_to_v0 ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integrator.rs (/tmp/sg-stable/release/deps/integrator-ceb9a22d427c8707)
+
+running 25 tests
+test adaptive_h_matches_eq13_for_two_bodies ... ok
+test apply_globals_rederives_and_rebases ... ok
+test drag_scheme_bias_is_h_gamma_squared_over_12 ... ok
+test energy_is_labelled_non_conservative_with_drag ... ok
+test failed_step_is_atomic ... ok
+test fixed_point_nonconvergence_is_flagged_not_hidden ... ok
+test adaptive_step_is_flagged_and_bounded ... ok
+test heating_of_isolated_body_is_exact ... ok
+test orbit_expected_omega_is_sqrt2_s ... ok
+test adaptive_v1_fixed_point_converges_every_step ... ok
+test orbit_hundred_orbits ... ignored, 1e5 steps; run with --release -- --ignored
+test drag_decay_rate_matches_gamma ... ok
+test probes_are_static_and_report_effective_g ... ok
+test frame_invariance_of_drag_evolution ... ok
+test screening_three_body_short_evolution ... ignored, expensive; measure leaf counts first
+test screening_xhi_regression_bound ... ok
+test v0_uses_one_force_evaluation_per_step ... ok
+test v1_runs_one_force_evaluation_per_step ... ok
+test v1_shortcut_is_bit_identical_to_full_evaluation ... ok
+test v2_gating_rejects_large_eps_and_leaves_no_world ... ok
+test v2_orbit_converges_and_tracks_v1_at_large_vg ... ok
+test verlet_is_time_reversible_v0 ... ok
+test orbit_five_orbits ... ok
+test orbit_period_error_scales_as_h_squared ... ok
+test screening_certified_mode_meets_1e6 ... ok
+
+test result: ok. 23 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 5.85s
+
+     Running tests/invariance.rs (/tmp/sg-stable/release/deps/invariance-ecd499fd040fead3)
+
+running 5 tests
+test permuting_the_bodies_permutes_the_forces ... ok
+test uniform_scaling_obeys_the_dimensional_law ... ok
+test force_is_finite_and_reciprocal_for_a_dense_random_cluster ... ok
+test rotating_the_cluster_rotates_the_forces_to_quadrature_accuracy ... ok
+test translating_the_cluster_leaves_forces_unchanged ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+     Running tests/oracle_lens.rs (/tmp/sg-stable/release/deps/oracle_lens-6815d52307dd520a)
+
+running 3 tests
+test certified_mode_vs_sharp_lens_oracle ... ignored, certified-level quadrature on partial overlap: cost unmeasured
+test standard_mode_vs_sharp_lens_oracle ... ok
+test validation_mode_meets_spec_4_3_target_vs_sharp_lens_oracle ... ok
+
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/oracle_sky.rs (/tmp/sg-stable/release/deps/oracle_sky-45b7b4b5069a383a)
+
+running 4 tests
+test screening_curve_certified_mode_matches_exact_oracle ... ignored, ~40 s: three 65M-leaf evaluations
+test partial_and_3d_overlap_standard_mode_matches_sky_oracle ... ok
+test partial_and_3d_overlap_validation_mode_matches_sky_oracle ... ok
+test screening_curve_matches_exact_oracle ... ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests/perf_equiv.rs (/tmp/sg-stable/release/deps/perf_equiv-6830282de488c81c)
+
+running 4 tests
+test thin_fast_is_gated ... ok
+test thin_fast_matches_conforming_within_barnes_hut_error ... ok
+test parallel_hash_and_brute_are_bitwise_identical ... ok
+test hash_candidates_equal_brute ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/reference_mode.rs (/tmp/sg-stable/release/deps/reference_mode-dc44833000f9de9e)
+
+running 4 tests
+test reference_two_body_matches_closed_form_pair ... ok
+test reference_refuses_out_of_scope_worlds ... ok
+test reference_reproduces_exact_screening_ratio ... ok
+test reference_judges_the_production_quadrature ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.81s
+
+     Running tests/scenario.rs (/tmp/sg-stable/release/deps/scenario-ee864bd94ad5963f)
+
+running 8 tests
+test engine_validation_reaches_the_user_as_an_error ... ok
+test drag_decay_example_falls_to_one_over_e ... ok
+test json_reader_basics_and_errors ... ok
+test thin_two_body_example_is_newtonian_to_the_thin_limit_error ... ok
+test unknown_and_missing_keys_are_errors_not_defaults ... ok
+test collinear_example_gives_the_screening_ratio_of_test_c ... ok
+test every_shipped_scenario_runs_to_completion ... ok
+test every_shipped_example_parses_and_builds ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/spec_gaps.rs (/tmp/sg-stable/release/deps/spec_gaps-abb656cbd68269cd)
+
+running 7 tests
+test invalid_mass_or_density_is_rejected ... ok
+test drag_rate_diagnostic_matches_reference ... ok
+test equivalence_principle_eta_ep_equals_delta_to_first_order ... ok
+test newtonian_and_thin_residuals_equal_one_minus_s_squared ... ok
+test screening_deviation_is_linear_in_tau_at_small_tau ... ok
+test screening_ratio_decreases_monotonically ... ok
+test screening_curve_validation_mode_tracks_exact_oracle ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s
+
+     Running unittests src/main.rs (/tmp/sg-stable/release/deps/shadowgrav_ui-c44016f9bde5368d)
+
+running 7 tests
+test export::tests::export_writes_rectangular_csv_and_json_metadata_sidecar ... ok
+test sim::tests::bad_edit_is_rolled_back_and_flagged_red ... ok
+test sim::tests::load_preset_bumps_generation_and_pauses ... ok
+test sim::tests::oracle_presets_match_recorded_delta_na ... ok
+test sim::tests::every_preset_builds_and_steps ... ok
+test sim::tests::sim_thread_runs_and_publishes_green_orbit ... ok
+test sim::tests::sky_map_follows_target_and_focus_commands ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+   Doc-tests shadowgrav_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+=== exit_code ===
+0
+=== end_utc ===
+2026-11-07T02:07:25Z

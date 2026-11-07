@@ -1,0 +1,25 @@
+=== command ===
+cargo test --release --locked --workspace -- --test-threads=4
+=== rustc ===
+rustc 1.83.0 (90b35a623 2024-11-26)
+=== start_utc ===
+2026-11-07T02:10:52Z
+ Downloading crates ...
+error: failed to download `calloop v0.14.5`
+
+Caused by:
+  unable to get packages from source
+
+Caused by:
+  failed to parse manifest at `/usr/local/cargo/registry/src/index.crates.io-6f17d22bba15001f/calloop-0.14.5/Cargo.toml`
+
+Caused by:
+  feature `edition2024` is required
+
+  The package requires the Cargo feature called `edition2024`, but that feature is not stabilized in this version of Cargo (1.83.0 (5ffbef321 2024-10-29)).
+  Consider trying a newer version of Cargo (this may require the nightly release).
+  See https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#edition-2024 for more information about the status of this feature.
+=== exit_code ===
+101
+=== end_utc ===
+2026-11-07T02:10:52Z

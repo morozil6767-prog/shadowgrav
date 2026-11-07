@@ -1,0 +1,22 @@
+theta_far = 0.050021 rad, Omega_far = 7.858897e-03 sr
+
+Stair boundaries: interior level l is selected for f_v in [rho_l/theta_far, rho_(l-1)/theta_far)
+  l= 9  Nside=   4096  rho=3.748e-04  f_v >= 7.492e-03   interior leaves (2 targets) 2.5182e+05
+  l=10  Nside=   8192  rho=1.874e-04  f_v >= 3.746e-03   interior leaves (2 targets) 1.0073e+06
+  l=11  Nside=  16384  rho=9.369e-05  f_v >= 1.873e-03   interior leaves (2 targets) 4.0291e+06
+  l=12  Nside=  32768  rho=4.684e-05  f_v >= 9.365e-04   interior leaves (2 targets) 1.6116e+07
+  l=13  Nside=  65536  rho=2.342e-05  f_v >= 4.682e-04   interior leaves (2 targets) 6.4465e+07
+  l=14  Nside= 131072  rho=1.171e-05  f_v >= 2.341e-04   interior leaves (2 targets) 2.5786e+08
+  l=15  Nside= 262144  rho=5.856e-06  f_v >= 1.171e-04   interior leaves (2 targets) 1.0314e+09
+
+rim level for f_s=0.0004: l=14 (cap must be >= this; rho=1.171e-05 <= 2.001e-05)
+
+row check against convergence.txt (tau=20):
+  f_v=0.005   cap=14: measured    1467932  interior-model 1.0073e+06  ratio 1.457  (level 10)
+  f_v=0.002   cap=14: measured    4467284  interior-model 4.0291e+06  ratio 1.109  (level 11)
+  f_v=0.0015  cap=15: measured   16509332  interior-model 1.6116e+07  ratio 1.024  (level 12)
+  f_v=0.001   cap=15: measured   16509332  interior-model 1.6116e+07  ratio 1.024  (level 12)
+  f_v=0.0007  cap=15: measured   64767596  interior-model 6.4465e+07  ratio 1.005  (level 13)
+  f_v=0.0007  cap=16: measured   64767596  interior-model 6.4465e+07  ratio 1.005  (level 13)
+  f_v=0.0005  cap=15: measured   64767596  interior-model 6.4465e+07  ratio 1.005  (level 13)
+  f_v=0.0005  cap=16: measured   64767596  interior-model 6.4465e+07  ratio 1.005  (level 13)
