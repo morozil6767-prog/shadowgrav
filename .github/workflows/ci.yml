@@ -1,0 +1,239 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * 1' # weekly conformance run, Mondays at 04:17 UTC
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  core:
+    name: Core release tests / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Record runner identity
+        shell: bash
+        run: |
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "os=$RUNNER_OS"
+            echo "image=$ImageOS $ImageVersion"
+            rustc --version --verbose
+            cargo --version
+          } 2>&1 | tee runner.txt
+      - name: Run core test suite
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo test --release --locked -p shadowgrav-core 2>&1 | tee core-tests.txt
+      - name: Capture reproducibility digest
+        shell: bash
+        run: |
+          cargo run --release --locked -p shadowgrav-core --bin sgrun -- repro-hash | tee repro-hash.txt
+      - name: Upload core test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-tests-${{ matrix.os }}
+          path: |
+            runner.txt
+            core-tests.txt
+            repro-hash.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  core-serial-vendored:
+    name: Core serial + vendored libm
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Record runner identity
+        shell: bash
+        run: |
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "os=$RUNNER_OS"
+            rustc --version --verbose
+            cargo --version
+          } 2>&1 | tee runner.txt
+      - name: Run serial vendored-libm test suite
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo test --release --locked -p shadowgrav-core --no-default-features --features vendored-libm 2>&1 | tee core-serial-vendored.txt
+      - name: Upload serial test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-serial-vendored
+          path: |
+            runner.txt
+            core-serial-vendored.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  ui:
+    name: Native UI build + tests / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install Linux window-system build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev libx11-xcb-dev libxcb1-dev \
+            libxcb-render0-dev libxcb-shm0-dev libxcb-randr0-dev libxcb-xfixes0-dev libxcb-shape0-dev \
+            libxcb-xinerama0-dev libxcb-xkb-dev libxcb-cursor-dev libxcb-icccm4-dev \
+            libxcb-keysyms1-dev libxcb-image0-dev libxcb-util-dev libxrandr-dev libudev-dev \
+            libgl1-mesa-dev libegl1-mesa-dev pkg-config
+      - name: Record runner identity
+        shell: bash
+        run: |
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "os=$RUNNER_OS"
+            echo "image=$ImageOS $ImageVersion"
+            rustc --version --verbose
+            cargo --version
+          } 2>&1 | tee runner.txt
+      - name: Build native UI
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo build --release --locked -p shadowgrav-ui 2>&1 | tee ui-build.txt
+      - name: Run UI and protocol tests
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo test --release --locked -p shadowgrav-ui 2>&1 | tee ui-tests.txt
+      - name: Upload UI build and test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-proof-${{ matrix.os }}
+          path: |
+            runner.txt
+            ui-build.txt
+            ui-tests.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  repro-hash:
+    name: Reproducibility hash / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Record runner identity
+        shell: bash
+        run: |
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "os=$RUNNER_OS"
+            rustc --version --verbose
+            cargo --version
+          } 2>&1 | tee runner.txt
+      - name: Generate serial vendored-libm digest
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo run --release --locked -p shadowgrav-core --no-default-features --features vendored-libm --bin sgrun -- repro-hash 2>&1 | tee hash.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hash-${{ matrix.os }}
+          path: |
+            runner.txt
+            hash.txt
+          retention-days: 30
+
+  repro-compare:
+    name: Compare cross-platform digests
+    needs: repro-hash
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      - name: Require identical combined digests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for d in hash-*; do echo "$d: $(grep '^combined' "$d/hash.txt")"; done
+          test "$(grep -h '^combined' hash-*/hash.txt | sort -u | wc -l)" = 1 || {
+            echo "DIGESTS DIFFER ACROSS PLATFORMS"
+            exit 1
+          }
+          {
+            echo 'Cross-platform digest comparison: PASS'
+            grep -h '^combined' hash-*/hash.txt | sort -u
+          } | tee repro-compare.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: repro-compare
+          path: repro-compare.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  certify:
+    name: Spec test (c) certified gate
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Record runner identity
+        shell: bash
+        run: |
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "os=$RUNNER_OS"
+            rustc --version --verbose
+            cargo --version
+          } 2>&1 | tee runner.txt
+      - name: Run certified screening check
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo run --release --locked -p shadowgrav-core --bin sgrun -- certify 2>&1 | tee certify.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: certified-screening-result
+          path: |
+            runner.txt
+            certify.txt
+          if-no-files-found: warn
+          retention-days: 90

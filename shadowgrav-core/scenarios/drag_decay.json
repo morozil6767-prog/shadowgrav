@@ -1,0 +1,7 @@
+{ "format": "shadowgrav-scenario/1",
+  "title": "V1 drag decay: single body, thin limit, initial velocity along x; h*gamma = 0.005 (gamma = 8.0e7 in code units, so h = 0.005/gamma = 6.25e-11); 200 steps = one decay time, speed should fall to 1/e",
+  "mode": "v1", "quadrature": "standard",
+  "globals": { "tau_c": 1e-6, "v_g": 1000 },
+  "bodies": [ { "x": [0, 0, 0], "v": [1.0, 0, 0] } ],
+  "step": { "h": 6.25e-11 },
+  "run": { "steps": 200, "stride": 20 } }

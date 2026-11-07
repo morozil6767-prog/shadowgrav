@@ -1,3 +1,119 @@
-# New repo
+# shadowgrav
 
-This repo was created by a Cursor cloud agent.
+**Classical non-additive shadow-gravity (Le Sage-type) N-body research instrument**
+
+A binary64 reference engine and native desktop instrument for testing the *specified classical shadow model*. This is not general relativity, Sakharov induced gravity, cosmology, or a validated theory of gravity.
+
+| Layer | Repository state | Evidence status |
+|---|---|---|
+| Physics core | Pair-exact force path, finite-sphere saturation, adaptive non-additive overlap correction, V0/V1/V2, integrator and diagnostics are implemented | Extensive named tests and oracle artifacts are present; core tests executed successfully on Linux x86_64 (rustc 1.99.1) in this review |
+| Test (c) certified screening | A certified quadrature preset and a measured result are documented in `CLAIMS.md` / `shadowgrav-core/CONVERGENCE.md` | Repository-reported result, not re-run in this review |
+| Native UI | egui desktop instrument with 3D view, force arrows, sky diagnostic, presets, conformance status and snapshot export | Source and headless UI tests present; native window still needs a real desktop-session proof |
+| Multi-OS CI | Core and native UI workflows configured for Ubuntu, macOS and Windows; reproducibility digest comparison configured | Configuration is present; no live GitHub Actions run/result was supplied with this source archive |
+| Export | Rectangular 27-column CSV plus same-stem JSON metadata, column dictionary and code-unit map | Schema has a UI unit test; core tests run successfully in this environment |
+
+**New:** run scenarios from JSON with `sgrun run` or from Python (`python/`); see **TUTORIAL.md**.
+
+Read **CLAIMS.md** before quoting model results. Read **SCIENTIFIC_MANUAL.md** for operating guidance and **SCOPE_v1.md** for declared limits. The project should not be described as a fully certified research platform until the remaining traceability gaps and external CI evidence have been closed.
+
+---
+
+## Additional analysis and comparison tools (2026-11-07)
+- `ERROR_BUDGETS.md` — published oracle error budgets for unequal-radius geometries.
+
+- `REPRODUCIBILITY.md` — digests and multi-OS comparison template.
+
+
+
+- `MODEL_VS_OBSERVATION.md` — explicit table of what the model does and does not reproduce.
+
+- `python/analysis/analyze_export.py` — plot and summarize any trajectory or snapshot CSV without reading Rust.
+
+- `oracle/oracle_unequal_radius.py` — independent grid oracle for unequal radii.
+
+- `IMPROVEMENTS_2026-11-07.md` — record of the product-quality pass performed in this environment.
+
+
+## Quick start
+
+### Requirements
+
+- Rust stable (1.76+ recommended for the UI)
+- Windows / macOS / Linux desktop for the native UI
+
+### Build and run
+
+```bash
+cargo build --release --locked -p shadowgrav-ui
+cargo run --release --locked -p shadowgrav-ui
+```
+
+### Automated checks
+
+```bash
+# Full workspace tests, including core and headless UI tests
+cargo test --release --locked --workspace
+
+# Screening measurement ladder
+cargo run --release --locked -p shadowgrav-core --bin verify -- c
+
+# Certified Spec test (c) screening gate
+cargo run --release --locked -p shadowgrav-core --bin sgrun -- certify
+```
+
+The certified screening command is a targeted check, not a substitute for the complete suite or for the other conformance tests (a), (b), (d), and (e).
+
+### Capture machine proof
+
+Linux / macOS:
+
+```bash
+./scripts/local-proof.sh --launch-ui
+```
+
+Windows PowerShell:
+
+```powershell
+.\scripts\local-proof.ps1 -LaunchUI
+```
+
+These scripts capture OS/toolchain details, workspace test logs, UI build logs and (when requested) the native application launch. Follow `MACHINE_PROOF.md` to capture visual evidence; successful compilation alone is not a GUI proof.
+
+### Interactive checks
+
+1. Preset **(a)** — inspect the orbit and conservation diagnostics.
+2. Preset **(c)** — inspect R, |R−0.8|, overlap correction and quadrature tier; the Certified tier is expensive.
+3. Enable individual force arrows and compare common-scale versus per-component scaling.
+4. Inspect the selected body's sky map; remember it is diagnostic only and is not used to calculate forces.
+5. Press **E** — export a rectangular CSV and a same-stem `.meta.json` sidecar.
+6. Enable **thin-fast** only as an explicitly labelled non-conforming preview.
+
+---
+
+## Repository map
+
+```text
+shadowgrav-core/   force engine, integrator, diagnostics, conformance tests
+shadowgrav-ui/     native egui instrument
+oracle/            independent Python oracle/reference scripts
+report/            convergence data and figures
+scripts/           machine-proof capture scripts
+CLAIMS.md          permitted claims and explicit non-claims
+SCIENTIFIC_MANUAL.md
+SCOPE_v1.md
+MACHINE_PROOF.md   local desktop and CI evidence checklist
+AUDIT_2026-11-06.md
+```
+
+## Quadrature tiers
+
+| Tier | Intended use |
+|---|---|
+| Standard | Exploration and rapid iteration |
+| Validation | Dynamics-grade interactive work |
+| Fine | Higher-resolution interactive checks; still short of the Spec's 1e-6 test (c) target |
+| Certified | Targeted Spec test (c) screening gate; expensive and geometry-specific |
+
+## Release discipline
+
+A release candidate needs reproducible local `cargo test --release --locked --workspace` results, a real native-window run on the target machine, and green Ubuntu/macOS/Windows Actions results. Keep the test logs, run metadata, screenshots and commit hash together. Do not upgrade a source-level claim into an executed result without its corresponding evidence.

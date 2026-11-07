@@ -1,0 +1,23 @@
+[package]
+name = "shadowgrav-core"
+version = "0.2.1"
+edition = "2021"
+rust-version = "1.70"
+description = "Scalar binary64 reference engine for a classical non-additive shadow-gravity N-body model"
+publish = false
+build = "build.rs"
+
+[features]
+# Rayon over targets (bitwise-identical to serial: each target is computed independently and collected in index order).
+default = ["parallel"]
+parallel = ["dep:rayon"]
+# Route exp/expm1/atan2/sin/cos/cbrt/sinh/asinh through the pure-Rust `libm` crate
+# (platform-independent results). Off by default: the std/platform libm is used.
+vendored-libm = ["dep:libm"]
+
+[dependencies]
+libm = { version = "0.2", optional = true }
+rayon = { version = "1.8", optional = true }
+
+# Profiles live in the workspace root Cargo.toml (opt-level 3, overflow-checks for release and test).
+# Building this crate standalone: use `cargo test --release`.

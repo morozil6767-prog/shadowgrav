@@ -1,0 +1,6 @@
+{ "format": "shadowgrav-scenario/1",
+  "title": "Spec test (c): three equal collinear spheres, d = 10 a, tau_c = 20 (exact screening ratio R = 0.8 + 2e-9)",
+  "mode": "v0", "quadrature": "validation",
+  "globals": { "tau_c": 20 },
+  "bodies": [ { "x": [0, 0, 0] }, { "x": [10, 0, 0] }, { "x": [20, 0, 0] } ],
+  "diagnostics": { "reference": true, "tau_max": true } }

@@ -1,0 +1,66 @@
+# Prebuilt binaries for people who do not have Rust. NEVER RUN YET (written without CI access): first run is on a version tag, or
+# manually via "Run workflow". Check the artifacts before announcing a release.
+name: release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    name: build / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  name: linux-x86_64,  exe: '',     ui: false }
+          - { os: macos-latest,   name: macos-arm64,   exe: '',     ui: true }
+          - { os: windows-latest, name: windows-x86_64, exe: '.exe', ui: true }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Test before packaging
+        shell: bash
+        run: cargo test --release --locked -p shadowgrav-core
+      - name: Build sgrun (and the UI where a desktop session library set is available)
+        shell: bash
+        run: |
+          cargo build --release --locked -p shadowgrav-core --bin sgrun
+          if [ "${{ matrix.ui }}" = "true" ]; then cargo build --release --locked -p shadowgrav-ui; fi
+      - name: Smoke test the built executable
+        shell: bash
+        run: |
+          ./target/release/sgrun${{ matrix.exe }} validate shadowgrav-core/scenarios/collinear_screening.json
+          ./target/release/sgrun${{ matrix.exe }} repro-hash | tee repro.txt
+          SHADOWGRAV_SGRUN=./target/release/sgrun${{ matrix.exe }} python3 -m unittest discover -s python/tests
+      - name: Package
+        shell: bash
+        run: |
+          d=shadowgrav-${{ matrix.name }}
+          mkdir "$d"
+          cp target/release/sgrun${{ matrix.exe }} "$d"/
+          if [ "${{ matrix.ui }}" = "true" ]; then cp target/release/shadowgrav-ui${{ matrix.exe }} "$d"/ || true; fi
+          cp -r python shadowgrav-core/scenarios "$d"/
+          cp README.md CLAIMS.md SCOPE_v1.md TUTORIAL.md repro.txt "$d"/
+          if [ "$RUNNER_OS" = "Windows" ]; then 7z a "$d.zip" "$d"; else zip -qr "$d.zip" "$d"; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shadowgrav-${{ matrix.name }}
+          path: shadowgrav-${{ matrix.name }}.zip
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dist, merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          body: "Prebuilt executables. Read CLAIMS.md first; compare `sgrun repro-hash` with CLAIMS/CI before quoting numbers."

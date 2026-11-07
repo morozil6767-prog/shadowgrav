@@ -1,0 +1,5 @@
+{ "format": "shadowgrav-scenario/1",
+  "title": "Genuinely 3D partial overlap (oracle geometry), tau_c = 5, standard quadrature",
+  "globals": { "tau_c": 5 },
+  "bodies": [ { "x": [0, 0, 0] }, { "x": [10, 0, 0] }, { "x": [12, 1.4, 1.4] } ],
+  "diagnostics": { "reference": true } }

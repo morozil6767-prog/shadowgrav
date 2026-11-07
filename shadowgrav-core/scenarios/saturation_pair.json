@@ -1,0 +1,6 @@
+{ "format": "shadowgrav-scenario/1",
+  "title": "Two-body saturation at d=10a, tau_c=5: G_eff reduced by S^2 relative to Newtonian thin limit",
+  "mode": "v0", "quadrature": "validation",
+  "globals": { "tau_c": 5 },
+  "bodies": [ { "x": [0, 0, 0] }, { "x": [10, 0, 0] } ],
+  "diagnostics": { "reference": true } }

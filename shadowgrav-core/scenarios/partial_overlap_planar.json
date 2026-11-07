@@ -1,0 +1,6 @@
+{ "format": "shadowgrav-scenario/1",
+  "title": "Non-nested planar partial overlap: body A sees B at 10a and C at (12,2)a; Delta^NA non-zero only in the lens",
+  "mode": "v0", "quadrature": "validation",
+  "globals": { "tau_c": 5 },
+  "bodies": [ { "x": [0, 0, 0] }, { "x": [10, 0, 0] }, { "x": [12, 2, 0] } ],
+  "diagnostics": { "reference": true, "tau_max": true } }

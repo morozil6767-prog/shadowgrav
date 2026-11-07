@@ -1,0 +1,4 @@
+{ "format": "shadowgrav-scenario/1",
+  "title": "Two bodies, thin limit (tau_c = 1e-6): Newtonian within the thin-limit error; force on body 0 is G m^2 / r^2 toward body 1",
+  "globals": { "tau_c": 1e-6 },
+  "bodies": [ { "x": [0, 0, 0] }, { "x": [10, 0, 0] } ] }
