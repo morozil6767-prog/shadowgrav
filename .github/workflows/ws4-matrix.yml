@@ -70,9 +70,9 @@ jobs:
           rustc --version
           ./scripts/core-isolated-msrv.sh
 
-  # continue-on-error: the unmaintained-crate policy is not decided.
+  # continue-on-error stays on this job only.
   # Last local cargo deny check exited 1 because four unmaintained crates are errors.
-  # A non-zero exit here must not fail the workflow until that policy is chosen.
+  # A non-zero exit must not fail the workflow until that policy is chosen.
   cargo-deny:
     name: cargo deny check (policy open)
     runs-on: ubuntu-latest
@@ -90,14 +90,12 @@ jobs:
           arguments: ""
           log-level: warn
 
-  # continue-on-error: same open policy.
-  # Last local cargo audit exited 0 and printed the four unmaintained crates as warnings.
-  # A zero exit is the last observed result. continue-on-error keeps a later non-zero audit
-  # from failing the workflow before the policy is chosen.
+  # No continue-on-error. Last local cargo audit exited 0 and printed the four
+  # unmaintained crates as warnings, so the last observed command result is success.
+  # A later non-zero audit will fail this job.
   cargo-audit:
     name: cargo audit (policy open)
     runs-on: ubuntu-latest
-    continue-on-error: true
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
