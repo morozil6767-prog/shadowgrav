@@ -48,7 +48,7 @@ jobs:
           cargo fmt --all --check
           cargo clippy --locked --workspace --all-targets -- -D warnings
           cargo test --locked --workspace --all-targets
-          RUSTDOCFLAGS=-D warnings cargo doc --locked --workspace --no-deps
+          RUSTDOCFLAGS="-D warnings" cargo doc --locked --workspace --no-deps
           cargo run --release --locked -p shadowgrav-core --bin sgrun -- repro-hash | tee repro-hash.txt
           grep -E '^combined[[:space:]]+f2e108670c118a3d$' repro-hash.txt
 
