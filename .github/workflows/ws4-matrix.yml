@@ -4,7 +4,7 @@
 
 name: ws4-matrix
 
-on:
+"on":
   workflow_dispatch:
 
 permissions:
