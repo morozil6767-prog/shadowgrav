@@ -17,6 +17,9 @@ The workspace test command runs the core test binaries and the headless UI/proto
 complete output and toolchain/OS details; do not infer that a mathematical requirement passed because a related test
 compiled.
 
+`SHADOWGRAV_VERIFY_PDF_STEPS` is test-only. Unset, `verify` uses h=T/2000. The value `1000` forces the scored PDF 7(a)
+path to h=T/1000, and `verify` exits non-zero by design. It does not change the 5e-6 bound.
+
 Targeted suites useful when triaging changes:
 
 ```bash

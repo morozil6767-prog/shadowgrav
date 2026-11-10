@@ -63,6 +63,8 @@ cargo run --release --locked -p shadowgrav-core --bin sgrun -- certify
 
 The certified screening command is a targeted check, not a substitute for the complete suite or for the other conformance tests (a), (b), (d), and (e).
 
+`SHADOWGRAV_VERIFY_PDF_STEPS` is test-only. Leave it unset for a normal run: `verify` then scores PDF 7(a) at h=T/2000. Setting it to `1000` scores the same criteria at h=T/1000 and `verify` exits non-zero by design, because that step does not meet the unchanged 5e-6 period bound.
+
 ### Capture machine proof
 
 Linux / macOS:
