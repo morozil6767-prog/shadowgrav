@@ -9,3 +9,13 @@ Nothing here uses the Spec's overlap machinery (no HEALPix, no overlap graph, no
 
 Run: `python3 oracle_screening.py`; `python3 oracle_sky.py` (about 2 minutes). Requires numpy, mpmath.
 sky_out.txt is the recorded output the Rust reference vectors were copied from.
+
+## WS6 cross-check (second implementation on random geometries)
+| script | what it provides |
+|---|---|
+| xcheck_random.py | 58 seeded random geometries (A sparse, B partial overlap, C deep overlap, D near contact, E target inside a sphere). Independent Python evaluation of F = Gamma * Int n D dOmega (Gauss-Legendre in sin-substituted polar coordinates about each occluder, chord-weight sharing) and of the pair force (direct 1-D integral), compared with the engine at tiers standard, validation, graded and (every 6th geometry) certified. Own error estimate from a doubled grid. |
+| ../shadowgrav-core/examples/xcheck_dump.rs | The engine side: reads a geometry on stdin, prints the engine's derived quantities, pair, total and correction forces. |
+
+Run (about 7 minutes): `cargo build --release -p shadowgrav-core --example xcheck_dump` then
+`python3 -I oracle/xcheck_random.py --dump target/release/examples/xcheck_dump --out-prefix xc`. Needs numpy and scipy (no mpmath).
+Recorded output: report/data/ws6_xcheck_report.md, ws6_xcheck_rows.csv. Method, limits and results: WS6_VALIDATION.md.
