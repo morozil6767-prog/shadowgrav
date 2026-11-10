@@ -99,12 +99,23 @@ fn driver_opts(mode: Mode, force_gl: bool) -> Options {
     o
 }
 
+/// Shipped default is 2000 (h = T/2000). `SHADOWGRAV_VERIFY_PDF_STEPS=1000` is test-only:
+/// it scores the same PDF criteria at h = T/1000, where the period line fails. No other value is honoured.
+fn pdf_steps_per_orbit() -> u32 {
+    match std::env::var("SHADOWGRAV_VERIFY_PDF_STEPS") {
+        Ok(v) if v == "1000" => 1000,
+        _ => 2000,
+    }
+}
+
 fn stage_orbit_drag(rep: &mut Rep) -> Result<(), SimError> {
     // T/1000 cannot meet PDF 5e-6 for this scheme (error ~0.333 (omega h)^2, break-even ~T/1620).
-    // PDF test (a) is integrated at h=T/2000. The 5e-6 bound and the Addendum 2 bound are unchanged.
-    println!("--- stage B: test (a) orbit, 5 orbits, h = T/2000");
+    // PDF test (a) is integrated at h=T/2000 unless the test-only env above selects 1000.
+    // The 5e-6 bound and the Addendum 2 bound are unchanged.
+    let steps = pdf_steps_per_orbit();
+    println!("--- stage B: test (a) orbit, 5 orbits, h = T/{steps}");
     let t0 = Instant::now();
-    let r = run_orbit(two_body_orbit(1e-6, 2000, Mode::V0, 1e3)?, 5)?;
+    let r = run_orbit(two_body_orbit(1e-6, steps, Mode::V0, 1e3)?, 5)?;
     let wh2 = r.omega_h * r.omega_h;
     // Addendum 2 item 1. The bound formula is unchanged; (omega h)^2 is the value at this step.
     rep.check(
@@ -117,7 +128,7 @@ fn stage_orbit_drag(rep: &mut Rep) -> Result<(), SimError> {
         r.secular_de <= 0.05 * wh2,
         format!("{:.2e}", r.secular_de),
     );
-    println!("--- PDF 7(a) criteria, h=T/2000, 5 orbits");
+    println!("--- PDF 7(a) criteria, h=T/{steps}, 5 orbits");
     for c in orbit_criteria(&r) {
         if c.name.starts_with("PDF") {
             rep.check(
