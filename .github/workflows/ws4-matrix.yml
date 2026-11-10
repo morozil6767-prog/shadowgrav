@@ -1,11 +1,13 @@
 # WS4 matrix. This file is not a CI result.
-# push, pull_request, and schedule are omitted on purpose so adding the file
-# does not enable those runs. It has not been executed on GitHub.
+# pull_request and schedule are omitted. push is limited to review/**.
+# It has not been executed on GitHub.
 
 name: ws4-matrix
 
 "on":
   workflow_dispatch:
+  push:
+    branches: ['review/**']
 
 permissions:
   contents: read
