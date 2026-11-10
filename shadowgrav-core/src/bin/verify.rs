@@ -1,7 +1,7 @@
 //! Runnable verification driver.  UNEXECUTED when written.
 //!   cargo run --release --bin verify          -> quick staged checks (identities, 5-orbit test (a), test (d1))
-//!   cargo run --release --bin verify -- c     -> MEASURE test (c): R, leaf counts, cap-hits, wall time,
-//!                                               standard vs refined vs validation mode (no pass/fail guesses)
+//!   cargo run --release --bin verify -- c     -> test (c): print every row. The standard f=0.15 row is
+//!                                               gated on |R-0.8| <= 5e-3. Validation and xhi are not gated.
 //!   cargo run --release --bin verify -- all   -> both
 //!   cargo run --release --bin verify -- spec-a -> PDF 7(a) at h=T/2000 for 5 orbits and for 100 orbits.
 //! Exit code 1 if any process-gated check fails, including any PDF 7(a) criterion.
@@ -169,8 +169,13 @@ fn stage_orbit_drag(rep: &mut Rep) -> Result<(), SimError> {
     Ok(())
 }
 
-/// Test (c) geometry at tau_c = tau. Prints data; no verdict.
-fn measure(label: &str, tau: f64, g_edit: impl Fn(&mut Globals), validation: Option<Validation>) {
+/// Test (c) geometry at tau_c = tau. Returns |R - 0.8| when the force evaluation succeeds.
+fn measure(
+    label: &str,
+    tau: f64,
+    g_edit: impl Fn(&mut Globals),
+    validation: Option<Validation>,
+) -> Option<f64> {
     let a = sphere_radius(1.0, RHO0);
     let mut g = Globals::defaults();
     g.kappa0 = kappa0_for_tau(tau, 1.0, RHO0);
@@ -186,7 +191,7 @@ fn measure(label: &str, tau: f64, g_edit: impl Fn(&mut Globals), validation: Opt
         Ok(d) => d,
         Err(e) => {
             println!("{label}: derive failed {e:?}");
-            return;
+            return None;
         }
     };
     let t0 = Instant::now();
@@ -194,19 +199,54 @@ fn measure(label: &str, tau: f64, g_edit: impl Fn(&mut Globals), validation: Opt
         Ok(f) => {
             let r = norm(&f.f_total[0]) / norm(&f.f_pair[0]);
             let sym = norm(&add(&f.f_total[0], &f.f_total[2])) / norm(&f.f_total[0]);
-            println!("{label:<34} R={r:.9}  |R-0.8|={:.2e}  F_B/F_A={:.1e}  A+C={sym:.1e}  leaves={}  cap_hits={}  {:.2}s",
-                     (r - 0.8).abs(), norm(&f.f_total[1]) / norm(&f.f_total[0]),
+            let abs = (r - 0.8).abs();
+            println!("{label:<34} R={r:.9}  |R-0.8|={abs:.2e}  F_B/F_A={:.1e}  A+C={sym:.1e}  leaves={}  cap_hits={}  {:.2}s",
+                     norm(&f.f_total[1]) / norm(&f.f_total[0]),
                      f.status.leaf_count, f.status.cap_hit_count, t0.elapsed().as_secs_f64());
+            Some(abs)
         }
-        Err(e) => println!(
-            "{label:<34} ABORTED: {e:?}  ({:.2}s)",
-            t0.elapsed().as_secs_f64()
-        ),
+        Err(e) => {
+            println!(
+                "{label:<34} ABORTED: {e:?}  ({:.2}s)",
+                t0.elapsed().as_secs_f64()
+            );
+            None
+        }
     }
 }
-fn stage_c() {
-    println!("--- test (c) measurements (tau = 20 unless stated).  Spec target: |R-0.8| <= 1e-6, alt. in standard mode ~5e-3");
-    measure("standard f=0.15 cap12", 20.0, |_| {}, None);
+
+/// Shipped clause: |R-0.8| <= 5e-3 (CLAIMS.md provisional Spec clause; sgrun and the UI use <=).
+/// `SHADOWGRAV_VERIFY_C_STD_BOUND=1e-4` is test-only. It scores that same row against 1e-4 so the
+/// process exits non-zero. Any other value, including unset, keeps 5e-3. 1e-4 is not a spec bound.
+fn standard_clause() -> (f64, &'static str, bool) {
+    match std::env::var("SHADOWGRAV_VERIFY_C_STD_BOUND") {
+        Ok(v) if v == "1e-4" => (1e-4, "test (c) standard |R-0.8| <= 1e-4", true),
+        _ => (5e-3, "test (c) standard |R-0.8| <= 5e-3", false),
+    }
+}
+
+fn gate_abs(rep: &mut Rep, name: &str, abs: Option<f64>, bound: f64, test_only: bool) {
+    let (ok, detail) = match abs {
+        Some(m) => {
+            let mut d = format!("measured={m:.2e} bound={bound:.0e}");
+            if test_only {
+                d.push_str(" test-only");
+            }
+            (m <= bound, d)
+        }
+        None => (false, "measurement aborted".to_string()),
+    };
+    rep.check(name, ok, detail);
+    if !ok {
+        println!("test (c) clause failed: {name}");
+    }
+}
+
+fn stage_c(rep: &mut Rep) {
+    println!("--- test (c) measurements (tau = 20 unless stated).  Spec target: |R-0.8| <= 1e-6; standard f=0.15 clause |R-0.8| <= 5e-3");
+    let std = measure("standard f=0.15 cap12", 20.0, |_| {}, None);
+    let (bound, name, probe) = standard_clause();
+    gate_abs(rep, name, std, bound, probe);
     measure("standard f=0.075 cap12", 20.0, |g| g.f = 0.075, None);
     measure(
         "standard f=0.0375 cap13",
@@ -230,17 +270,21 @@ fn stage_c() {
         Some(Validation::xhi()),
     );
     if std::env::args().any(|a| a == "certified") {
-        measure(
+        let abs = measure(
             "certified (7e-4, 4e-4, cap15) ~14 s",
             20.0,
             |_| {},
             Some(Validation::certified()),
         );
+        gate_abs(rep, "test (c) certified |R-0.8| <= 1e-6", abs, 1e-6, false);
     }
     println!("--- R(tau) monotonic decrease, standard mode");
     for &t in &[1e-3, 1e-2, 0.1, 1.0, 5.0, 10.0, 20.0, 50.0] {
         measure(&format!("standard tau={t}"), t, |_| {}, None);
     }
+    println!(
+        "validation, xhi, refined standard rows, and the R(tau) scan are printed and not gated"
+    );
 }
 
 fn spec_a() -> i32 {
@@ -374,7 +418,7 @@ fn main() {
         }
     }
     if arg == "c" || arg == "all" {
-        stage_c();
+        stage_c(&mut rep);
     }
     println!("\n{} check(s) failed", rep.fails);
     if rep.fails > 0 {
