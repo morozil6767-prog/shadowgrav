@@ -1,0 +1,110 @@
+# WS4 matrix. This file is not a CI result.
+# push, pull_request, and schedule are omitted on purpose so adding the file
+# does not enable those runs. It has not been executed on GitHub.
+
+name: ws4-matrix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  workspace-188:
+    name: Workspace 1.88.0 / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: 1.88.0
+          components: clippy, rustfmt
+      - name: Install Linux window-system build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev libx11-xcb-dev libxcb1-dev \
+            libxcb-render0-dev libxcb-shm0-dev libxcb-randr0-dev libxcb-xfixes0-dev libxcb-shape0-dev \
+            libxcb-xinerama0-dev libxcb-xkb-dev libxcb-cursor-dev libxcb-icccm4-dev \
+            libxcb-keysyms1-dev libxcb-image0-dev libxcb-util-dev libxrandr-dev libudev-dev \
+            libgl1-mesa-dev libegl1-mesa-dev pkg-config
+      - name: fmt, clippy, tests, docs, repro-hash
+        shell: bash
+        run: |
+          set -o pipefail
+          rustc --version
+          cargo fmt --all --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace --all-targets
+          RUSTDOCFLAGS=-D warnings cargo doc --locked --workspace --no-deps
+          cargo run --release --locked -p shadowgrav-core --bin sgrun -- repro-hash | tee repro-hash.txt
+          grep -E '^combined[[:space:]]+f2e108670c118a3d$' repro-hash.txt
+
+  core-180:
+    name: Core isolated 1.80.0 / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: 1.80.0
+      - name: Build and test shadowgrav-core on its own lock
+        shell: bash
+        run: |
+          set -o pipefail
+          rustc --version
+          ./scripts/core-isolated-msrv.sh
+
+  # continue-on-error: the unmaintained-crate policy is not decided.
+  # Last local cargo deny check exited 1 because four unmaintained crates are errors.
+  # A non-zero exit here must not fail the workflow until that policy is chosen.
+  cargo-deny:
+    name: cargo deny check (policy open)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: 1.88.0
+      - name: cargo deny check
+        uses: EmbarkStudios/cargo-deny-action@9b7d65878c2d28c8e3c16e30bf555c29abe505bd # v2.0.11
+        with:
+          command: check
+          arguments: ""
+          log-level: warn
+
+  # continue-on-error: same open policy.
+  # Last local cargo audit exited 0 and printed the four unmaintained crates as warnings.
+  # A zero exit is the last observed result. continue-on-error keeps a later non-zero audit
+  # from failing the workflow before the policy is chosen.
+  cargo-audit:
+    name: cargo audit (policy open)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: 1.88.0
+      - name: Install cargo-audit 0.22.2 and run it
+        run: |
+          cargo install cargo-audit --version 0.22.2 --locked
+          cargo audit
