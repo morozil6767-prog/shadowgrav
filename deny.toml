@@ -1,0 +1,51 @@
+# Dependency policy for the build. This file does not license shadowgrav itself.
+# shadowgrav-core and shadowgrav-ui stay publish = false and have no LICENSE file.
+#
+# Allow-list is the SPDX identifiers actually used by resolved third-party crates,
+# and only the permissive ones. An OR-expression passes when one allowed identifier
+# matches, so LGPL-2.1-or-later on r-efi is not allowed and is not selected.
+# OFL-1.1 and Ubuntu-font-1.0 are not global. The exception below is only
+# epaint_default_fonts, which bundles those font files. shadowgrav is not relicensed.
+
+[advisories]
+version = 2
+# cargo-deny 0.20 has no warn level for these. "all" reports every match as an
+# error. "none" would hide them. Vulnerabilities are always errors. ignore stays empty.
+unmaintained = "all"
+unsound = "all"
+yanked = "warn"
+ignore = []
+
+[licenses]
+version = 2
+allow = [
+    "0BSD",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BSL-1.0",
+    "ISC",
+    "MIT",
+    "Unicode-3.0",
+    "Unlicense",
+    "Zlib",
+]
+confidence-threshold = 0.8
+unused-allowed-license = "warn"
+
+[licenses.private]
+ignore = true
+
+# Owner decision: OFL-1.1 and Ubuntu Font Licence 1.0 only for this font crate.
+[[licenses.exceptions]]
+crate = "epaint_default_fonts@0.32.3"
+allow = ["OFL-1.1", "Ubuntu-font-1.0"]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "allow"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

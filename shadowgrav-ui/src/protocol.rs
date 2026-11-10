@@ -1,7 +1,7 @@
 //! The ONLY types that cross the thread boundary between the simulation thread and the UI.
 //!
 //!   UI  --Command-->  sim thread        (mpsc channel, applied between steps)
-//!   UI  <--Arc<FrameSnapshot>--  sim thread   (latest-wins slot; immutable once published)
+//!   UI  <--`Arc<FrameSnapshot>`--  sim thread   (latest-wins slot; immutable once published)
 //!
 //! Nothing here references `World`, so the UI cannot reach physics state (Architecture section 2, rule 4).
 use shadowgrav_core::skymap::{SkyFocus, SkyMap};
@@ -23,7 +23,10 @@ pub enum QuadTier {
 
 impl QuadTier {
     pub const ALL: [QuadTier; 4] = [
-        QuadTier::Standard, QuadTier::Validation, QuadTier::Fine, QuadTier::Certified,
+        QuadTier::Standard,
+        QuadTier::Validation,
+        QuadTier::Fine,
+        QuadTier::Certified,
     ];
     pub fn label(self) -> &'static str {
         match self {
@@ -35,22 +38,44 @@ impl QuadTier {
     }
     pub fn detail(self) -> &'static str {
         match self {
-            QuadTier::Standard => "Fast. Test (c): |R-0.8| <= 5e-3 (provisional). Partial overlap coarse.",
-            QuadTier::Validation => "~0.5M leaves/eval. Dynamics-grade. Test (c) ~1e-5 — not Spec 1e-6.",
+            QuadTier::Standard => {
+                "Fast. Test (c): |R-0.8| <= 5e-3 (provisional). Partial overlap coarse."
+            }
+            QuadTier::Validation => {
+                "~0.5M leaves/eval. Dynamics-grade. Test (c) ~1e-5 — not Spec 1e-6."
+            }
             QuadTier::Fine => "~4.5M leaves/eval. Test (c) ~3e-6 — still short of Spec 1e-6.",
-            QuadTier::Certified => "~65M leaves, ~10-20s/eval. Meets Spec 1e-6 on test (c). Prefer single evaluations.",
+            QuadTier::Certified => {
+                "~65M leaves, ~10-20s/eval. Meets Spec 1e-6 on test (c). Prefer single evaluations."
+            }
         }
     }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum PresetKind { TwoBodyOrbit, TwoBodyOrbitV2, Saturation, Screening, PartialOverlap, Overlap3D, Drag, DragFrame, DenseRandom }
+pub enum PresetKind {
+    TwoBodyOrbit,
+    TwoBodyOrbitV2,
+    Saturation,
+    Screening,
+    PartialOverlap,
+    Overlap3D,
+    Drag,
+    DragFrame,
+    DenseRandom,
+}
 
 impl PresetKind {
     pub const ALL: [PresetKind; 9] = [
-        PresetKind::TwoBodyOrbit, PresetKind::TwoBodyOrbitV2, PresetKind::Saturation,
-        PresetKind::Screening, PresetKind::PartialOverlap, PresetKind::Overlap3D,
-        PresetKind::Drag, PresetKind::DragFrame, PresetKind::DenseRandom,
+        PresetKind::TwoBodyOrbit,
+        PresetKind::TwoBodyOrbitV2,
+        PresetKind::Saturation,
+        PresetKind::Screening,
+        PresetKind::PartialOverlap,
+        PresetKind::Overlap3D,
+        PresetKind::Drag,
+        PresetKind::DragFrame,
+        PresetKind::DenseRandom,
     ];
     pub fn label(&self) -> &'static str {
         match self {
@@ -120,13 +145,24 @@ impl PresetKind {
             ],
         }
     }
-    pub fn uses_tau(&self) -> bool { !matches!(self, PresetKind::Drag | PresetKind::DragFrame) }
-    pub fn uses_n(&self) -> bool { matches!(self, PresetKind::DenseRandom) }
-    pub fn uses_steps(&self) -> bool { matches!(self, PresetKind::TwoBodyOrbit | PresetKind::TwoBodyOrbitV2) }
+    pub fn uses_tau(&self) -> bool {
+        !matches!(self, PresetKind::Drag | PresetKind::DragFrame)
+    }
+    pub fn uses_n(&self) -> bool {
+        matches!(self, PresetKind::DenseRandom)
+    }
+    pub fn uses_steps(&self) -> bool {
+        matches!(self, PresetKind::TwoBodyOrbit | PresetKind::TwoBodyOrbitV2)
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct PresetSpec { pub kind: PresetKind, pub tau_c: f64, pub steps_per_orbit: u32, pub n: u32 }
+pub struct PresetSpec {
+    pub kind: PresetKind,
+    pub tau_c: f64,
+    pub steps_per_orbit: u32,
+    pub n: u32,
+}
 impl PresetSpec {
     pub fn default_for(kind: PresetKind) -> PresetSpec {
         let tau_c = match kind {
@@ -137,21 +173,34 @@ impl PresetSpec {
             PresetKind::PartialOverlap | PresetKind::Overlap3D => 5.0,
             _ => 1e-3,
         };
-        PresetSpec { kind, tau_c, steps_per_orbit: 1000, n: 100 }
+        PresetSpec {
+            kind,
+            tau_c,
+            steps_per_orbit: 1000,
+            n: 100,
+        }
     }
 }
 
 #[derive(Clone, Debug)]
 pub enum Command {
-    Play, Pause, Step(u32),
+    Play,
+    Pause,
+    Step(u32),
     Load(PresetSpec),
     /// Target steps per wall-clock second; 0 = as fast as the 8 ms/frame budget allows.
     SetRate(f64),
     SetFixedH(f64),
     SetAdaptive(bool),
     SetMode(Mode),
-    SetKappa0(f64), SetXi(f64), SetVg(f64), SetAlphaBg(f64), SetF(f64),
-    SetQuadTier(QuadTier), SetInstrumented(bool), SetLeafBudget(u64),
+    SetKappa0(f64),
+    SetXi(f64),
+    SetVg(f64),
+    SetAlphaBg(f64),
+    SetF(f64),
+    SetQuadTier(QuadTier),
+    SetInstrumented(bool),
+    SetLeafBudget(u64),
     /// Rayon over targets (bitwise-identical results).
     SetParallel(bool),
     /// NON-CONFORMING Barnes-Hut preview (gated in the core: V0, alpha_bg = 0, all tau_c < 1e-2).
@@ -165,44 +214,111 @@ pub enum Command {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum Badge { Green, Amber, Red }
+pub enum Badge {
+    Green,
+    Amber,
+    Red,
+}
 
 #[derive(Clone, Debug)]
 pub struct BodyView {
-    pub x: [f64; 3], pub v: [f64; 3],
-    pub mass: f64, pub radius: f64, pub tau_c: f64, pub s: f64, pub is_probe: bool,
-    pub f_total: [f64; 3], pub f_pair: [f64; 3], pub f_corr: [f64; 3], pub f_dr: [f64; 3], pub f_ab: [f64; 3],
+    pub x: [f64; 3],
+    pub v: [f64; 3],
+    pub mass: f64,
+    pub radius: f64,
+    pub tau_c: f64,
+    pub s: f64,
+    pub is_probe: bool,
+    pub f_total: [f64; 3],
+    pub f_pair: [f64; 3],
+    pub f_corr: [f64; 3],
+    pub f_dr: [f64; 3],
+    pub f_ab: [f64; 3],
 }
 
 #[derive(Clone, Debug)]
 pub struct ParamView {
-    pub mode: Mode, pub kappa0: f64, pub xi: f64, pub v_g: f64, pub alpha_bg: f64,
-    pub g_n: f64, pub pi_flux: f64, pub calibrated: bool,
-    pub h: f64, pub adaptive: bool, pub f: f64, pub quad_tier: QuadTier, pub instrumented: bool,
-    pub leaf_budget: u64, pub ell_cap: u32,
-    pub thin_fast: bool, pub parallel: bool,
+    pub mode: Mode,
+    pub kappa0: f64,
+    pub xi: f64,
+    pub v_g: f64,
+    pub alpha_bg: f64,
+    pub g_n: f64,
+    pub pi_flux: f64,
+    pub calibrated: bool,
+    pub h: f64,
+    pub adaptive: bool,
+    pub f: f64,
+    pub quad_tier: QuadTier,
+    pub instrumented: bool,
+    pub leaf_budget: u64,
+    pub ell_cap: u32,
+    pub thin_fast: bool,
+    pub parallel: bool,
 }
 
-#[derive(Clone, Debug)] pub struct TargetRow { pub k: usize, pub delta_na: f64, pub delta_sat: f64, pub r_newton: f64, pub r_thin: f64, pub gamma: Option<f64> }
-#[derive(Clone, Debug)] pub struct PairRow { pub k: usize, pub j: usize, pub g_eff: f64, pub expected: Option<f64> }
+#[derive(Clone, Debug)]
+pub struct TargetRow {
+    pub k: usize,
+    pub delta_na: f64,
+    pub delta_sat: f64,
+    pub r_newton: f64,
+    pub r_thin: f64,
+    pub gamma: Option<f64>,
+}
+#[derive(Clone, Debug)]
+pub struct PairRow {
+    pub k: usize,
+    pub j: usize,
+    pub g_eff: f64,
+    pub expected: Option<f64>,
+}
 
 /// Spec 6 item 11 read-out carried to the front end (workspace_9). `max_rel_diff` / `est_err` are None when the world is outside
 /// reference scope; `text` always says what happened. Not displayed by an egui widget yet: it also appears as an "extras" row.
 #[derive(Clone, Debug)]
-pub struct RefView { pub max_rel_diff: Option<f64>, pub est_err: Option<f64>, pub exceeds_est: Option<bool>, pub text: String }
+pub struct RefView {
+    pub max_rel_diff: Option<f64>,
+    pub est_err: Option<f64>,
+    pub exceeds_est: Option<bool>,
+    pub text: String,
+}
 
 /// Slow diagnostics (rebuilt at <= 10 Hz and shared by Arc between frames).
 #[derive(Clone, Debug, Default)]
 pub struct DiagView {
     pub seq: u64,
-    pub e: f64, pub ke: f64, pub pe: f64, pub energy_nonconservative: bool,
-    pub de: f64, pub max_de: f64, pub dp: f64, pub max_dp: f64, pub dl: f64, pub max_dl: f64,
-    pub rp_shadow: f64, pub rp_total: f64, pub max_rp_total: f64,
-    pub targets: Vec<TargetRow>, pub pairs: Vec<PairRow>,
-    pub leaf_count: u64, pub cap_hits: u64, pub max_corr_over_f: f64,
-    pub fp_iters: u32, pub fp_residual: f64, pub fp_converged: bool, pub force_evals: u32,
-    pub tau_min: f64, pub tau_mean: f64, pub tau_max: f64, pub s_min: f64, pub s_mean: f64,
-    pub thin_valid: bool, pub v2_valid: bool, pub overlap_present: bool, pub interior_present: bool,
+    pub e: f64,
+    pub ke: f64,
+    pub pe: f64,
+    pub energy_nonconservative: bool,
+    pub de: f64,
+    pub max_de: f64,
+    pub dp: f64,
+    pub max_dp: f64,
+    pub dl: f64,
+    pub max_dl: f64,
+    pub rp_shadow: f64,
+    pub rp_total: f64,
+    pub max_rp_total: f64,
+    pub targets: Vec<TargetRow>,
+    pub pairs: Vec<PairRow>,
+    pub leaf_count: u64,
+    pub cap_hits: u64,
+    pub max_corr_over_f: f64,
+    pub fp_iters: u32,
+    pub fp_residual: f64,
+    pub fp_converged: bool,
+    pub force_evals: u32,
+    pub tau_min: f64,
+    pub tau_mean: f64,
+    pub tau_max: f64,
+    pub s_min: f64,
+    pub s_mean: f64,
+    pub thin_valid: bool,
+    pub v2_valid: bool,
+    pub overlap_present: bool,
+    pub interior_present: bool,
     pub labels: Vec<String>,
     /// Preset-specific read-outs, e.g. ("R = |F_A|/|F_pair|", "0.800001").
     pub extras: Vec<(String, String)>,
@@ -220,14 +336,19 @@ pub struct DiagView {
 
 #[derive(Clone, Debug)]
 pub struct FrameSnapshot {
-    pub seq: u64, pub load_gen: u64,
+    pub seq: u64,
+    pub load_gen: u64,
     pub preset: Option<PresetSpec>,
-    pub running: bool, pub rate: f64, pub steps_per_sec: f64,
-    pub time: f64, pub step: u64,
+    pub running: bool,
+    pub rate: f64,
+    pub steps_per_sec: f64,
+    pub time: f64,
+    pub step: u64,
     pub bodies: Vec<BodyView>,
     pub params: ParamView,
     pub diag: Arc<DiagView>,
-    pub badge: Badge, pub badge_reasons: Vec<String>,
+    pub badge: Badge,
+    pub badge_reasons: Vec<String>,
     /// The first `badge_n_red` reasons are red (non-conforming); the rest are amber caveats.
     pub badge_n_red: usize,
     pub error: Option<String>,

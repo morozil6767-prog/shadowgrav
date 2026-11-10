@@ -52,12 +52,20 @@ pub fn pix2vec_nest(nside: u64, pix: u64) -> [f64; 3] {
         kshift = (jr - ns) & 1;
     }
     let mut jp = (JPLL[face] * nr + ix - iy + 1 + kshift) / 2;
-    if jp > nl4 { jp -= nl4; }
-    if jp < 1 { jp += nl4; }
+    if jp > nl4 {
+        jp -= nl4;
+    }
+    if jp < 1 {
+        jp += nl4;
+    }
     let phi = (jp as f64 - (kshift + 1) as f64 * 0.5) * ((PI / 2.0) / nr as f64);
-    let (sp, cp) = crate::mathx::sin_cos(phi);   // platform-independent under `vendored-libm` (Addendum 3 item 10)
+    let (sp, cp) = crate::mathx::sin_cos(phi); // platform-independent under `vendored-libm` (Addendum 3 item 10)
     [sth * cp, sth * sp, z]
 }
 /// A_l = pi/(3 Nside^2); rho_l = 1.5 sqrt(A_l)   (Spec 4.3 item 3)
-pub fn cell_area(nside: u64) -> f64 { PI / (3.0 * (nside as f64) * (nside as f64)) }
-pub fn cell_radius(area: f64) -> f64 { 1.5 * area.sqrt() }
+pub fn cell_area(nside: u64) -> f64 {
+    PI / (3.0 * (nside as f64) * (nside as f64))
+}
+pub fn cell_radius(area: f64) -> f64 {
+    1.5 * area.sqrt()
+}

@@ -20,13 +20,17 @@ pub enum SimError {
     NonFiniteState { index: usize },
     BadConfig(&'static str),
 }
-impl From<CoreError> for SimError { fn from(e: CoreError) -> Self { SimError::Core(e) } }
+impl From<CoreError> for SimError {
+    fn from(e: CoreError) -> Self {
+        SimError::Core(e)
+    }
+}
 
 /// Eq. 11-13 step control. `Adaptive` is flagged non-reversible / non-symplectic for the whole run.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum StepControl {
     Fixed { h: f64 },
-    Adaptive { h_max: f64, eta_t: f64 },        // eta_t = 0.005 by Contract
+    Adaptive { h_max: f64, eta_t: f64 }, // eta_t = 0.005 by Contract
 }
 
 #[derive(Clone, Debug)]
@@ -43,10 +47,18 @@ pub struct SimConfig {
 }
 impl SimConfig {
     pub fn fixed(h: f64) -> SimConfig {
-        SimConfig { step: StepControl::Fixed { h }, diag_every: 1, eta_e: 1.0, zeta: 0.5, v1_shortcut: true }
+        SimConfig {
+            step: StepControl::Fixed { h },
+            diag_every: 1,
+            eta_e: 1.0,
+            zeta: 0.5,
+            v1_shortcut: true,
+        }
     }
     pub fn validate(&self) -> Result<(), SimError> {
-        if self.diag_every == 0 { return Err(SimError::BadConfig("diag_every must be >= 1")); }
+        if self.diag_every == 0 {
+            return Err(SimError::BadConfig("diag_every must be >= 1"));
+        }
         if !self.eta_e.is_finite() || !(0.0..=1.0).contains(&self.eta_e) {
             return Err(SimError::BadConfig("eta_E must be finite and in [0, 1]"));
         }
@@ -55,9 +67,15 @@ impl SimConfig {
         }
         let ok = match self.step {
             StepControl::Fixed { h } => h > 0.0 && h.is_finite(),
-            StepControl::Adaptive { h_max, eta_t } => h_max > 0.0 && h_max.is_finite() && eta_t > 0.0 && eta_t.is_finite(),
+            StepControl::Adaptive { h_max, eta_t } => {
+                h_max > 0.0 && h_max.is_finite() && eta_t > 0.0 && eta_t.is_finite()
+            }
         };
-        if ok { Ok(()) } else { Err(SimError::BadConfig("invalid step control")) }
+        if ok {
+            Ok(())
+        } else {
+            Err(SimError::BadConfig("invalid step control"))
+        }
     }
 }
 
@@ -70,18 +88,26 @@ pub struct RunFlags {
     pub cap_hit_total: u64,
 }
 impl RunFlags {
-    pub fn reversible(&self) -> bool { !self.adaptive_step_used }
-    pub fn symplectic_step(&self) -> bool { !self.adaptive_step_used }
+    pub fn reversible(&self) -> bool {
+        !self.adaptive_step_used
+    }
+    pub fn symplectic_step(&self) -> bool {
+        !self.adaptive_step_used
+    }
 }
 
 /// a_k = F_k / m_k for bodies; probes are never integrated (acc = 0).
 pub fn accelerations(p: &Particles, f: &[V3]) -> Vec<V3> {
-    (0..p.x.len()).map(|k| {
-        if p.kind[k] == Kind::Body {
-            let m = p.m[k];
-            [f[k][0] / m, f[k][1] / m, f[k][2] / m]
-        } else { [0.0; 3] }
-    }).collect()
+    (0..p.x.len())
+        .map(|k| {
+            if p.kind[k] == Kind::Body {
+                let m = p.m[k];
+                [f[k][0] / m, f[k][1] / m, f[k][2] / m]
+            } else {
+                [0.0; 3]
+            }
+        })
+        .collect()
 }
 
 fn checked_accelerations(p: &Particles, f: &[V3]) -> Result<Vec<V3>, SimError> {
@@ -113,8 +139,15 @@ pub struct World {
 
 fn check_lengths(p: &Particles) -> Result<(), SimError> {
     let n = p.x.len();
-    if p.v.len() != n || p.m.len() != n || p.rho.len() != n || p.delta.len() != n || p.kind.len() != n {
-        return Err(SimError::BadConfig("particle arrays have different lengths"));
+    if p.v.len() != n
+        || p.m.len() != n
+        || p.rho.len() != n
+        || p.delta.len() != n
+        || p.kind.len() != n
+    {
+        return Err(SimError::BadConfig(
+            "particle arrays have different lengths",
+        ));
     }
     Ok(())
 }
@@ -123,24 +156,44 @@ impl World {
     pub fn new(p: Particles, g: Globals, opt: Options, cfg: SimConfig) -> Result<World, SimError> {
         check_lengths(&p)?;
         cfg.validate()?;
-        let dv = crate::derive::derive(&p, &g)?;                         // rejects m<=0, rho<=0 (Spec 1.6)
-        let force = evaluate_forces(&p, &dv, &g, &opt)?;  // also enforces V2 gating
+        let dv = crate::derive::derive(&p, &g)?; // rejects m<=0, rho<=0 (Spec 1.6)
+        let force = evaluate_forces(&p, &dv, &g, &opt)?; // also enforces V2 gating
         let acc = checked_accelerations(&p, &force.f_total)?;
         let quad = Quad::new(g.n_gl);
-        let mut flags = RunFlags::default();
-        flags.adaptive_step_used = matches!(cfg.step, StepControl::Adaptive { .. });
+        let flags = RunFlags {
+            adaptive_step_used: matches!(cfg.step, StepControl::Adaptive { .. }),
+            ..Default::default()
+        };
         let mut w = World {
-            p, dv, g, opt, cfg, force, acc, step_count: 0, flags, ledger: Ledger::default(),
-            last_step: None, derived_version: 0, time: Neum::default(), quad,
+            p,
+            dv,
+            g,
+            opt,
+            cfg,
+            force,
+            acc,
+            step_count: 0,
+            flags,
+            ledger: Ledger::default(),
+            last_step: None,
+            derived_version: 0,
+            time: Neum::default(),
+            quad,
         };
         w.validate()?;
         w.rebase_ledger();
         Ok(w)
     }
 
-    pub fn time(&self) -> f64 { self.time.value() }
-    pub fn n(&self) -> usize { self.p.x.len() }
-    pub fn is_body(&self, k: usize) -> bool { self.p.kind[k] == Kind::Body }
+    pub fn time(&self) -> f64 {
+        self.time.value()
+    }
+    pub fn n(&self) -> usize {
+        self.p.x.len()
+    }
+    pub fn is_body(&self, k: usize) -> bool {
+        self.p.kind[k] == Kind::Body
+    }
 
     /// Revalidate the mutable public state before stepping. This prevents callers that edit
     /// public fields directly from bypassing constructor/live-edit checks (for example, a zero
@@ -153,23 +206,42 @@ impl World {
         let n = self.n();
         self.dv.validate_shape(n)?;
         if self.acc.len() != n {
-            return Err(SimError::BadConfig("acceleration array does not match particle count"));
+            return Err(SimError::BadConfig(
+                "acceleration array does not match particle count",
+            ));
         }
         let arrays = [
-            self.force.f_pair.len(), self.force.f_corr.len(), self.force.f_dr.len(),
-            self.force.f_ab.len(), self.force.f_total.len(),
+            self.force.f_pair.len(),
+            self.force.f_corr.len(),
+            self.force.f_dr.len(),
+            self.force.f_ab.len(),
+            self.force.f_total.len(),
         ];
         if arrays.iter().any(|&len| len != n) {
-            return Err(SimError::BadConfig("force arrays do not match particle count"));
+            return Err(SimError::BadConfig(
+                "force arrays do not match particle count",
+            ));
         }
         for i in 0..n {
             let values = [
-                self.acc[i][0], self.acc[i][1], self.acc[i][2],
-                self.force.f_pair[i][0], self.force.f_pair[i][1], self.force.f_pair[i][2],
-                self.force.f_corr[i][0], self.force.f_corr[i][1], self.force.f_corr[i][2],
-                self.force.f_dr[i][0], self.force.f_dr[i][1], self.force.f_dr[i][2],
-                self.force.f_ab[i][0], self.force.f_ab[i][1], self.force.f_ab[i][2],
-                self.force.f_total[i][0], self.force.f_total[i][1], self.force.f_total[i][2],
+                self.acc[i][0],
+                self.acc[i][1],
+                self.acc[i][2],
+                self.force.f_pair[i][0],
+                self.force.f_pair[i][1],
+                self.force.f_pair[i][2],
+                self.force.f_corr[i][0],
+                self.force.f_corr[i][1],
+                self.force.f_corr[i][2],
+                self.force.f_dr[i][0],
+                self.force.f_dr[i][1],
+                self.force.f_dr[i][2],
+                self.force.f_ab[i][0],
+                self.force.f_ab[i][1],
+                self.force.f_ab[i][2],
+                self.force.f_total[i][0],
+                self.force.f_total[i][1],
+                self.force.f_total[i][2],
             ];
             if values.iter().any(|x| !x.is_finite()) {
                 return Err(SimError::Core(CoreError::NonFinite { target: i }));
@@ -183,7 +255,9 @@ impl World {
         let mut c = self.cfg.clone();
         c.step = ctl;
         c.validate()?;
-        if matches!(ctl, StepControl::Adaptive { .. }) { self.flags.adaptive_step_used = true; }
+        if matches!(ctl, StepControl::Adaptive { .. }) {
+            self.flags.adaptive_step_used = true;
+        }
         self.cfg = c;
         Ok(())
     }
@@ -220,12 +294,21 @@ impl World {
     pub fn set_velocities(&mut self, v: Vec<V3>) -> Result<(), SimError> {
         // Validate the existing structure before indexing it for the edit.
         self.p.validate()?;
-        if v.len() != self.n() { return Err(SimError::BadConfig("velocity array length")); }
+        if v.len() != self.n() {
+            return Err(SimError::BadConfig("velocity array length"));
+        }
         let old = self.p.v.clone();
-        for k in 0..self.n() { if self.p.kind[k] == Kind::Body { self.p.v[k] = v[k]; } }
+        for (k, vel) in v.iter().enumerate() {
+            if self.p.kind[k] == Kind::Body {
+                self.p.v[k] = *vel;
+            }
+        }
         match self.refresh_forces() {
             Ok(()) => Ok(()),
-            Err(e) => { self.p.v = old; Err(e) }
+            Err(e) => {
+                self.p.v = old;
+                Err(e)
+            }
         }
     }
 
@@ -237,7 +320,10 @@ impl World {
         f(&mut self.g);
         match self.try_rederive() {
             Ok(()) => Ok(()),
-            Err(e) => { self.g = old; Err(e) }
+            Err(e) => {
+                self.g = old;
+                Err(e)
+            }
         }
     }
 
@@ -247,7 +333,10 @@ impl World {
         f(&mut self.opt);
         match self.try_rederive() {
             Ok(()) => Ok(()),
-            Err(e) => { self.opt = old; Err(e) }
+            Err(e) => {
+                self.opt = old;
+                Err(e)
+            }
         }
     }
 
@@ -268,11 +357,21 @@ impl World {
     /// Human-readable conformance labels required by the Contract.
     pub fn labels(&self) -> Vec<&'static str> {
         let mut v = Vec::new();
-        if self.flags.adaptive_step_used { v.push("adaptive-h: non-reversible, non-symplectic"); }
-        if self.flags.fp_nonconverged_steps > 0 { v.push("fixed-point (eq. 12) not converged on some steps"); }
-        if self.flags.cap_hit_total > 0 { v.push("cap-hit: refinement cap reached"); }
-        if self.g.pi_override.is_some() { v.push("uncalibrated mode (Pi overridden)"); }
-        if self.ledger.ever_nonconservative { v.push("energy: diagnostic, non-conservative regime"); }
+        if self.flags.adaptive_step_used {
+            v.push("adaptive-h: non-reversible, non-symplectic");
+        }
+        if self.flags.fp_nonconverged_steps > 0 {
+            v.push("fixed-point (eq. 12) not converged on some steps");
+        }
+        if self.flags.cap_hit_total > 0 {
+            v.push("cap-hit: refinement cap reached");
+        }
+        if self.g.pi_override.is_some() {
+            v.push("uncalibrated mode (Pi overridden)");
+        }
+        if self.ledger.ever_nonconservative {
+            v.push("energy: diagnostic, non-conservative regime");
+        }
         v
     }
 }

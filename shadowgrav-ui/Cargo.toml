@@ -2,10 +2,10 @@
 name = "shadowgrav-ui"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.76"
+rust-version = "1.88"
 description = "Native research front end (egui) for the shadowgrav-core reference engine"
 publish = false
 
 [dependencies]
 shadowgrav-core = { path = "../shadowgrav-core" }
-eframe = "0.29"
+eframe = "=0.32.0"

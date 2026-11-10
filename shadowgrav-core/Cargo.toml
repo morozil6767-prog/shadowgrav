@@ -2,7 +2,7 @@
 name = "shadowgrav-core"
 version = "0.2.1"
 edition = "2021"
-rust-version = "1.70"
+rust-version = "1.80"
 description = "Scalar binary64 reference engine for a classical non-additive shadow-gravity N-body model"
 publish = false
 build = "build.rs"

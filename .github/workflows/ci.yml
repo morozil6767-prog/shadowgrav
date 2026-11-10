@@ -1,5 +1,7 @@
 name: ci
 
+# Local workflow only. Writing this file does not run it and is not a green CI result.
+
 on:
   push:
   pull_request:
@@ -237,3 +239,63 @@ jobs:
             certify.txt
           if-no-files-found: warn
           retention-days: 90
+
+  msrv-workspace:
+    name: Workspace MSRV 1.88.0 clippy and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          components: clippy, rustfmt
+      - name: Install Linux window-system build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev libx11-xcb-dev libxcb1-dev \
+            libxcb-render0-dev libxcb-shm0-dev libxcb-randr0-dev libxcb-xfixes0-dev libxcb-shape0-dev \
+            libxcb-xinerama0-dev libxcb-xkb-dev libxcb-cursor-dev libxcb-icccm4-dev \
+            libxcb-keysyms1-dev libxcb-image0-dev libxcb-util-dev libxrandr-dev libudev-dev \
+            libgl1-mesa-dev libegl1-mesa-dev pkg-config
+      - name: Clippy, rustfmt, workspace tests, ignored tests
+        shell: bash
+        run: |
+          set -o pipefail
+          rustc --version --verbose | tee runner.txt
+          cargo clippy --all-targets --locked --workspace -- -D warnings 2>&1 | tee clippy.txt
+          cargo fmt --all --check 2>&1 | tee fmt.txt
+          cargo test --release --locked --workspace 2>&1 | tee test.txt
+          cargo test --release --locked --workspace -- --ignored 2>&1 | tee ignored.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: msrv-workspace-1.88.0
+          path: |
+            runner.txt
+            clippy.txt
+            fmt.txt
+            test.txt
+            ignored.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  msrv-core-isolated:
+    name: Core isolated MSRV 1.80.0
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.80.0
+      - name: Test the core crate outside the workspace lockfile
+        shell: bash
+        run: |
+          set -o pipefail
+          ./scripts/core-isolated-msrv.sh 2>&1 | tee core-isolated.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: msrv-core-isolated-1.80.0
+          path: core-isolated.txt
+          if-no-files-found: warn
+          retention-days: 30

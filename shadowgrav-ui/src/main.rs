@@ -21,5 +21,9 @@ fn main() -> eframe::Result<()> {
             .with_title("shadowgrav — non-additive shadow-gravity research instrument"),
         ..Default::default()
     };
-    eframe::run_native("shadowgrav", options, Box::new(|cc| Ok(Box::new(app::App::new(cc)))))
+    eframe::run_native(
+        "shadowgrav",
+        options,
+        Box::new(|cc| Ok(Box::new(app::App::new(cc)))),
+    )
 }

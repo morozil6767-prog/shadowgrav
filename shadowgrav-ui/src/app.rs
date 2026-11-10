@@ -5,7 +5,7 @@
 //!   left panel   Scene (preset, what to look at) / Physics / Time stepping / Quadrature / Backend / View
 //!   centre       3D view; below it the sky-map panel (toggle with S)
 //!   right panel  conformance card + headline tiles, then collapsible detail sections
-use crate::export::{export_snapshot, default_export_name, metadata_path};
+use crate::export::{default_export_name, export_snapshot, metadata_path};
 use crate::protocol::*;
 use crate::sim::{self, SimHandle};
 use crate::skyview::SkyPanel;
@@ -26,14 +26,37 @@ const DIM: Color32 = Color32::from_gray(140);
 
 #[derive(Clone)]
 struct UiParams {
-    kappa0: f64, xi: f64, v_g: f64, alpha_bg: f64, h: f64, f: f64, mode: Mode,
-    adaptive: bool, quad_tier: QuadTier, instrumented: bool, leaf_budget: u64, thin_fast: bool, parallel: bool,
+    kappa0: f64,
+    xi: f64,
+    v_g: f64,
+    alpha_bg: f64,
+    h: f64,
+    f: f64,
+    mode: Mode,
+    adaptive: bool,
+    quad_tier: QuadTier,
+    instrumented: bool,
+    leaf_budget: u64,
+    thin_fast: bool,
+    parallel: bool,
 }
 impl UiParams {
     fn from(p: &ParamView) -> Self {
-        UiParams { kappa0: p.kappa0, xi: p.xi, v_g: p.v_g, alpha_bg: p.alpha_bg, h: p.h, f: p.f, mode: p.mode,
-                   adaptive: p.adaptive, quad_tier: p.quad_tier, instrumented: p.instrumented, leaf_budget: p.leaf_budget,
-                   thin_fast: p.thin_fast, parallel: p.parallel }
+        UiParams {
+            kappa0: p.kappa0,
+            xi: p.xi,
+            v_g: p.v_g,
+            alpha_bg: p.alpha_bg,
+            h: p.h,
+            f: p.f,
+            mode: p.mode,
+            adaptive: p.adaptive,
+            quad_tier: p.quad_tier,
+            instrumented: p.instrumented,
+            leaf_budget: p.leaf_budget,
+            thin_fast: p.thin_fast,
+            parallel: p.parallel,
+        }
     }
 }
 
@@ -43,14 +66,20 @@ pub struct App {
     view: ViewState,
     sky: SkyPanel,
     show_sky: bool, // default on: sky is a first-class panel
-    sky_body: usize, prev_sky_body: usize,
-    sent_sky: Option<(usize, SkyFocus, f64)>, sent_sky_on: Option<bool>,
+    sky_body: usize,
+    prev_sky_body: usize,
+    sent_sky: Option<(usize, SkyFocus, f64)>,
+    sent_sky_on: Option<bool>,
     spec: PresetSpec,
     load_gen: u64,
     last_err: Option<String>,
     p: UiParams,
-    rate: f64, rate_max: bool,
-    hist_de: VecDeque<f64>, hist_rp: VecDeque<f64>, hist_na: VecDeque<f64>, last_diag_seq: u64,
+    rate: f64,
+    rate_max: bool,
+    hist_de: VecDeque<f64>,
+    hist_rp: VecDeque<f64>,
+    hist_na: VecDeque<f64>,
+    last_diag_seq: u64,
     last_export_msg: Option<String>,
 }
 const HIST: usize = 300;
@@ -65,13 +94,39 @@ impl App {
         let ctx = cc.egui_ctx.clone();
         let handle = sim::spawn(Box::new(move || ctx.request_repaint()));
         App {
-            handle, snap: None, view: ViewState::new(), sky: SkyPanel::new(), show_sky: true,
-            sky_body: 0, prev_sky_body: 0, sent_sky: None, sent_sky_on: None,
-            spec: PresetSpec::default_for(PresetKind::TwoBodyOrbit), load_gen: u64::MAX, last_err: None,
-            p: UiParams { kappa0: 2e-10, xi: 1.0, v_g: 1e3, alpha_bg: 0.0, h: 1e-3, f: 0.15, mode: Mode::V0,
-                          adaptive: false, quad_tier: QuadTier::Standard, instrumented: true, leaf_budget: 0, thin_fast: false, parallel: true },
-            rate: 600.0, rate_max: false,
-            hist_de: VecDeque::new(), hist_rp: VecDeque::new(), hist_na: VecDeque::new(), last_diag_seq: u64::MAX,
+            handle,
+            snap: None,
+            view: ViewState::new(),
+            sky: SkyPanel::new(),
+            show_sky: true,
+            sky_body: 0,
+            prev_sky_body: 0,
+            sent_sky: None,
+            sent_sky_on: None,
+            spec: PresetSpec::default_for(PresetKind::TwoBodyOrbit),
+            load_gen: u64::MAX,
+            last_err: None,
+            p: UiParams {
+                kappa0: 2e-10,
+                xi: 1.0,
+                v_g: 1e3,
+                alpha_bg: 0.0,
+                h: 1e-3,
+                f: 0.15,
+                mode: Mode::V0,
+                adaptive: false,
+                quad_tier: QuadTier::Standard,
+                instrumented: true,
+                leaf_budget: 0,
+                thin_fast: false,
+                parallel: true,
+            },
+            rate: 600.0,
+            rate_max: false,
+            hist_de: VecDeque::new(),
+            hist_rp: VecDeque::new(),
+            hist_na: VecDeque::new(),
+            last_diag_seq: u64::MAX,
             last_export_msg: None,
         }
     }
@@ -80,23 +135,42 @@ impl App {
         if s.load_gen != self.load_gen {
             self.load_gen = s.load_gen;
             self.p = UiParams::from(&s.params);
-            if let Some(sp) = s.preset { self.spec = sp; }
-            self.view.fit_and_reset(&s);              // data-driven default camera: look straight at a planar scene
+            if let Some(sp) = s.preset {
+                self.spec = sp;
+            }
+            self.view.fit_and_reset(&s); // data-driven default camera: look straight at a planar scene
             self.view.clear_trails();
             // a body is always selected, so arrows and the sky map are never empty on arrival
             let first = s.bodies.iter().position(|b| !b.is_probe).unwrap_or(0);
             self.view.selected = Some(first);
-            self.sky_body = first; self.prev_sky_body = first;
+            self.sky_body = first;
+            self.prev_sky_body = first;
             self.sky.reset_focus();
-            self.hist_de.clear(); self.hist_rp.clear(); self.hist_na.clear();
+            self.hist_de.clear();
+            self.hist_rp.clear();
+            self.hist_na.clear();
         }
-        if s.error != self.last_err { self.p = UiParams::from(&s.params); self.last_err = s.error.clone(); }
+        if s.error != self.last_err {
+            self.p = UiParams::from(&s.params);
+            self.last_err = s.error.clone();
+        }
         if s.diag.seq != self.last_diag_seq {
             self.last_diag_seq = s.diag.seq;
             let lg = |x: f64| x.max(1e-18).log10();
-            let na = s.diag.targets.iter().map(|t| t.delta_na).fold(0.0, f64::max);
-            for (h, v) in [(&mut self.hist_de, s.diag.de), (&mut self.hist_rp, s.diag.rp_total), (&mut self.hist_na, na)] {
-                if h.len() >= HIST { h.pop_front(); }
+            let na = s
+                .diag
+                .targets
+                .iter()
+                .map(|t| t.delta_na)
+                .fold(0.0, f64::max);
+            for (h, v) in [
+                (&mut self.hist_de, s.diag.de),
+                (&mut self.hist_rp, s.diag.rp_total),
+                (&mut self.hist_na, na),
+            ] {
+                if h.len() >= HIST {
+                    h.pop_front();
+                }
                 h.push_back(lg(v));
             }
         }
@@ -106,34 +180,64 @@ impl App {
 }
 
 // ---------------------------------------------------------------------------------------------- small widgets
-fn sci(x: f64) -> String { format!("{:.3e}", x) }
+fn sci(x: f64) -> String {
+    format!("{x:.3e}")
+}
 
-fn kv(ui: &mut egui::Ui, k: &str, v: String) { ui.label(RichText::new(k).weak()); ui.monospace(v); ui.end_row(); }
+fn kv(ui: &mut egui::Ui, k: &str, v: String) {
+    ui.label(RichText::new(k).weak());
+    ui.monospace(v);
+    ui.end_row();
+}
 fn kv_c(ui: &mut egui::Ui, k: &str, v: String, col: Color32, tip: &str) {
     let r = ui.label(RichText::new(k).weak());
-    if !tip.is_empty() { r.on_hover_text(tip); }
+    if !tip.is_empty() {
+        r.on_hover_text(tip);
+    }
     ui.label(RichText::new(v).monospace().color(col));
     ui.end_row();
 }
-fn flag(b: bool) -> (String, Color32) { (b.to_string(), if b { GREEN } else { DIM }) }
+fn flag(b: bool) -> (String, Color32) {
+    (b.to_string(), if b { GREEN } else { DIM })
+}
 
 /// Section label in the side panels (small, dim, with a rule) so groups read as groups.
 fn header(ui: &mut egui::Ui, text: &str) {
     ui.add_space(6.0);
-    ui.label(RichText::new(text.to_uppercase()).small().strong().color(DIM));
+    ui.label(
+        RichText::new(text.to_uppercase())
+            .small()
+            .strong()
+            .color(DIM),
+    );
     ui.separator();
 }
 
-fn slider(ui: &mut egui::Ui, v: &mut f64, r: RangeInclusive<f64>, label: &str, log: bool, tip: &str) -> bool {
-    ui.add(egui::Slider::new(v, r).logarithmic(log).text(label)).on_hover_text(tip).changed()
+fn slider(
+    ui: &mut egui::Ui,
+    v: &mut f64,
+    r: RangeInclusive<f64>,
+    label: &str,
+    log: bool,
+    tip: &str,
+) -> bool {
+    ui.add(egui::Slider::new(v, r).logarithmic(log).text(label))
+        .on_hover_text(tip)
+        .changed()
 }
 
 fn tile(ui: &mut egui::Ui, caption: &str, value: String, col: Color32, tip: &str) {
-    egui::Frame::none().fill(Color32::from_gray(24)).rounding(4.0).inner_margin(6.0).show(ui, |ui| {
-        ui.set_min_width(ui.available_width());
-        ui.label(RichText::new(caption).small().weak());
-        ui.label(RichText::new(value).monospace().size(15.0).color(col));
-    }).response.on_hover_text(tip);
+    egui::Frame::NONE
+        .fill(Color32::from_gray(24))
+        .corner_radius(4.0)
+        .inner_margin(6.0)
+        .show(ui, |ui| {
+            ui.set_min_width(ui.available_width());
+            ui.label(RichText::new(caption).small().weak());
+            ui.label(RichText::new(value).monospace().size(15.0).color(col));
+        })
+        .response
+        .on_hover_text(tip);
 }
 
 fn spark(ui: &mut egui::Ui, title: &str, data: &VecDeque<f64>, color: Color32) {
@@ -147,13 +251,25 @@ fn spark(ui: &mut egui::Ui, title: &str, data: &VecDeque<f64>, color: Color32) {
         mx = data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
         let span = (mx - mn).max(1e-9);
         let n = (data.len() - 1) as f32;
-        let pts: Vec<egui::Pos2> = data.iter().enumerate().map(|(i, v)| {
-            egui::pos2(rect.left() + i as f32 / n * rect.width(), rect.bottom() - 4.0 - ((v - mn) / span) as f32 * (rect.height() - 16.0))
-        }).collect();
-        p.add(egui::Shape::line(pts, egui::Stroke::new(1.3, color)));
+        let pts: Vec<egui::Pos2> = data
+            .iter()
+            .enumerate()
+            .map(|(i, v)| {
+                egui::pos2(
+                    rect.left() + i as f32 / n * rect.width(),
+                    rect.bottom() - 4.0 - ((v - mn) / span) as f32 * (rect.height() - 16.0),
+                )
+            })
+            .collect();
+        p.add(egui::Shape::line(pts, egui::Stroke::new(1.3_f32, color)));
     }
-    p.text(rect.left_top() + egui::vec2(4.0, 2.0), egui::Align2::LEFT_TOP,
-           format!("{title}  log10 in [{mn:.1}, {mx:.1}]"), egui::FontId::monospace(10.0), Color32::GRAY);
+    p.text(
+        rect.left_top() + egui::vec2(4.0, 2.0),
+        egui::Align2::LEFT_TOP,
+        format!("{title}  log10 in [{mn:.1}, {mx:.1}]"),
+        egui::FontId::monospace(10.0),
+        Color32::GRAY,
+    );
 }
 
 fn badge_style(b: Badge) -> (Color32, &'static str) {
@@ -168,9 +284,11 @@ fn badge_style(b: Badge) -> (Color32, &'static str) {
 fn badge_pill(ui: &mut egui::Ui, snap: &FrameSnapshot) {
     let (col, txt) = badge_style(snap.badge);
     let reasons = snap.badge_reasons.clone();
-    let r = egui::Frame::none()
-        .fill(col.gamma_multiply(0.22)).stroke(egui::Stroke::new(1.5, col)).rounding(14.0)
-        .inner_margin(egui::Margin::symmetric(12.0, 4.0))
+    let r = egui::Frame::NONE
+        .fill(col.gamma_multiply(0.22))
+        .stroke(egui::Stroke::new(1.5_f32, col))
+        .corner_radius(14.0)
+        .inner_margin(egui::Margin::symmetric(12, 4))
         .show(ui, |ui| {
             ui.horizontal(|ui| {
                 let (dot, _) = ui.allocate_exact_size(egui::vec2(14.0, 14.0), egui::Sense::hover());
@@ -178,16 +296,24 @@ fn badge_pill(ui: &mut egui::Ui, snap: &FrameSnapshot) {
                 ui.label(RichText::new(txt).strong().size(15.0).color(col));
             });
         });
-    r.response.on_hover_ui(|ui| { for t in &reasons { ui.label(t); } });
+    r.response.on_hover_ui(|ui| {
+        for t in &reasons {
+            ui.label(t);
+        }
+    });
 }
 
 fn next_body(snap: &FrameSnapshot, cur: usize, delta: i32) -> usize {
     let n = snap.bodies.len() as i32;
-    if n == 0 { return 0; }
+    if n == 0 {
+        return 0;
+    }
     let mut i = cur as i32;
     for _ in 0..n {
         i = (i + delta).rem_euclid(n);
-        if !snap.bodies[i as usize].is_probe { return i as usize; }
+        if !snap.bodies[i as usize].is_probe {
+            return i as usize;
+        }
     }
     cur
 }
@@ -195,40 +321,85 @@ fn next_body(snap: &FrameSnapshot, cur: usize, delta: i32) -> usize {
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         let latest = self.handle.latest.lock().unwrap().clone();
-        if let Some(s) = latest { if self.snap.as_ref().map_or(true, |c| c.seq != s.seq) { self.ingest(s); } }
+        if let Some(s) = latest {
+            if self.snap.as_ref().is_none_or(|c| c.seq != s.seq) {
+                self.ingest(s);
+            }
+        }
         let Some(snap) = self.snap.clone() else {
-            egui::CentralPanel::default().show(ctx, |ui| { ui.label("starting simulation thread..."); });
+            egui::CentralPanel::default().show(ctx, |ui| {
+                ui.label("starting simulation thread...");
+            });
             ctx.request_repaint_after(Duration::from_millis(30));
             return;
         };
         let tx = self.handle.tx.clone();
-        let send = move |c: Command| { let _ = tx.send(c); };
+        let send = move |c: Command| {
+            let _ = tx.send(c);
+        };
 
         // selection (3D click) drives the sky-map target; a change of target restarts the framing
         if let Some(i) = self.view.selected {
-            if snap.bodies.get(i).map_or(false, |b| !b.is_probe) { self.sky_body = i; }
+            if snap.bodies.get(i).is_some_and(|b| !b.is_probe) {
+                self.sky_body = i;
+            }
         }
-        if self.sky_body != self.prev_sky_body { self.sky.reset_focus(); self.prev_sky_body = self.sky_body; }
+        if self.sky_body != self.prev_sky_body {
+            self.sky.reset_focus();
+            self.prev_sky_body = self.sky_body;
+        }
 
         // ------------------------------------------------------------------ keyboard
         if !ctx.wants_keyboard_input() {
             let pressed = |k: egui::Key| ctx.input(|i| i.key_pressed(k));
-            if pressed(egui::Key::Space) { send(if snap.running { Command::Pause } else { Command::Play }); }
-            if pressed(egui::Key::Period) { send(Command::Step(1)); }
-            if pressed(egui::Key::F) { self.view.fit(&snap); }
-            if pressed(egui::Key::Num1) { self.view.set_axis(0); }
-            if pressed(egui::Key::Num2) { self.view.set_axis(1); }
-            if pressed(egui::Key::Num3) { self.view.set_axis(2); }
-            if pressed(egui::Key::S) { self.show_sky = !self.show_sky; }
+            if pressed(egui::Key::Space) {
+                send(if snap.running {
+                    Command::Pause
+                } else {
+                    Command::Play
+                });
+            }
+            if pressed(egui::Key::Period) {
+                send(Command::Step(1));
+            }
+            if pressed(egui::Key::F) {
+                self.view.fit(&snap);
+            }
+            if pressed(egui::Key::Num1) {
+                self.view.set_axis(0);
+            }
+            if pressed(egui::Key::Num2) {
+                self.view.set_axis(1);
+            }
+            if pressed(egui::Key::Num3) {
+                self.view.set_axis(2);
+            }
+            if pressed(egui::Key::S) {
+                self.show_sky = !self.show_sky;
+            }
             if pressed(egui::Key::E) {
                 let name = default_export_name(&snap);
                 match export_snapshot(std::path::Path::new(&name), &snap) {
-                    Ok(()) => self.last_export_msg = Some(format!("Exported {name} + {}", metadata_path(std::path::Path::new(&name)).file_name().and_then(|v| v.to_str()).unwrap_or("metadata.json"))),
+                    Ok(()) => {
+                        self.last_export_msg = Some(format!(
+                            "Exported {name} + {}",
+                            metadata_path(std::path::Path::new(&name))
+                                .file_name()
+                                .and_then(|v| v.to_str())
+                                .unwrap_or("metadata.json")
+                        ))
+                    }
                     Err(e) => self.last_export_msg = Some(format!("Export failed: {e}")),
                 }
             }
-            if pressed(egui::Key::ArrowLeft) { self.sky_body = next_body(&snap, self.sky_body, -1); self.view.selected = Some(self.sky_body); }
-            if pressed(egui::Key::ArrowRight) { self.sky_body = next_body(&snap, self.sky_body, 1); self.view.selected = Some(self.sky_body); }
+            if pressed(egui::Key::ArrowLeft) {
+                self.sky_body = next_body(&snap, self.sky_body, -1);
+                self.view.selected = Some(self.sky_body);
+            }
+            if pressed(egui::Key::ArrowRight) {
+                self.sky_body = next_body(&snap, self.sky_body, 1);
+                self.view.selected = Some(self.sky_body);
+            }
         }
 
         // ------------------------------------------------------------------ top bar: transport + badge
@@ -269,11 +440,11 @@ impl eframe::App for App {
                 } else {
                     "NON-CONFORMING / ERROR — see red badge reasons. State may have rolled back the last bad edit."
                 };
-                egui::Frame::none().fill(RED.gamma_multiply(0.25)).inner_margin(6.0).show(ui, |ui| {
+                egui::Frame::NONE.fill(RED.gamma_multiply(0.25)).inner_margin(6.0).show(ui, |ui| {
                     ui.label(RichText::new(msg).strong().color(RED));
                 });
             } else if snap.badge == Badge::Amber {
-                egui::Frame::none().fill(AMBER.gamma_multiply(0.15)).inner_margin(4.0).show(ui, |ui| {
+                egui::Frame::NONE.fill(AMBER.gamma_multiply(0.15)).inner_margin(4.0).show(ui, |ui| {
                     ui.label(RichText::new(format!(
                         "CAVEATS — mode {:?} · quad {} · results usable with stated limitations",
                         snap.params.mode, snap.params.quad_tier.label()
@@ -309,7 +480,7 @@ impl eframe::App for App {
         }
 
         // ------------------------------------------------------------------ left: scene + parameters + view
-        egui::SidePanel::left("params").default_width(300.0).show(ctx, |ui| {
+        let left_w = egui::SidePanel::left("params").default_width(300.0).show(ctx, |ui| {
             egui::ScrollArea::vertical().show(ui, |ui| {
                 header(ui, "Scene");
                 egui::ComboBox::from_label("preset").selected_text(self.spec.kind.label()).show_ui(ui, |ui| {
@@ -317,7 +488,7 @@ impl eframe::App for App {
                         if ui.selectable_value(&mut self.spec.kind, k, k.label()).clicked() { self.spec = PresetSpec::default_for(k); }
                     }
                 });
-                egui::Frame::none().fill(Color32::from_gray(26)).rounding(4.0).inner_margin(8.0).show(ui, |ui| {
+                egui::Frame::NONE.fill(Color32::from_gray(26)).corner_radius(4.0).inner_margin(8.0).show(ui, |ui| {
                     ui.set_min_width(ui.available_width());
                     ui.label(RichText::new(self.spec.kind.blurb()).small());
                     ui.add_space(2.0);
@@ -336,7 +507,7 @@ impl eframe::App for App {
                     ui.add(egui::Slider::new(&mut self.spec.steps_per_orbit, 100..=4000).text("steps/orbit"))
                         .on_hover_text("Sets h = T / steps. The energy error scales as (omega h)^2.");
                 }
-                let pending = snap.preset.map_or(true, |p| p.kind != self.spec.kind || p.tau_c != self.spec.tau_c
+                let pending = snap.preset.is_none_or(|p| p.kind != self.spec.kind || p.tau_c != self.spec.tau_c
                     || p.n != self.spec.n || p.steps_per_orbit != self.spec.steps_per_orbit);
                 let load = egui::Button::new(RichText::new(if pending { "Load scene (changes pending)" } else { "Reload scene" }).strong());
                 if ui.add_sized([ui.available_width(), 28.0], load).clicked() { send(Command::Load(self.spec)); }
@@ -349,7 +520,7 @@ impl eframe::App for App {
                         (Mode::V1, "V1: adds flux drag F_dr, proportional to (v - W). Needs v_g > 0."),
                         (Mode::V2, "V2: V1 plus first-order aberration of the pair and overlap geometry. Needs alpha_bg = 0 and max |eps| <= 0.1 with eps = (v - W)/v_g. Always carries a caveat."),
                     ] {
-                        if ui.selectable_value(&mut self.p.mode, m, format!("{:?}", m)).on_hover_text(tip).clicked() { send(Command::SetMode(m)); }
+                        if ui.selectable_value(&mut self.p.mode, m, format!("{m:?}")).on_hover_text(tip).clicked() { send(Command::SetMode(m)); }
                     }
                 });
                 if slider(ui, &mut self.p.kappa0, 1e-12..=1e-2, "kappa0", true,
@@ -375,7 +546,7 @@ impl eframe::App for App {
                     "Leaf criterion for the overlap correction: a HEALPix cell is a leaf when rho <= f x theta_min. Smaller f = finer, slower. Standard mode meets |R - 0.8| <= 5e-3 on test (c).") { send(Command::SetF(self.p.f)); }
                 ui.horizontal(|ui| {
                     ui.label("Quad tier");
-                    egui::ComboBox::from_id_source("quad_tier")
+                    egui::ComboBox::from_id_salt("quad_tier")
                         .selected_text(self.p.quad_tier.label())
                         .show_ui(ui, |ui| {
                             for t in QuadTier::ALL {
@@ -446,16 +617,19 @@ impl eframe::App for App {
                     .on_hover_text("Radii are physical (a ~ 0.01 against separations ~ 1); this exaggerates them for display only.");
                 ui.add(egui::Slider::new(&mut self.view.min_px, 1.0..=12.0).text("min px")).on_hover_text("Minimum drawn radius in pixels.");
             });
-        });
+        }).response.rect.width();
 
         // ------------------------------------------------------------------ right: conformance + diagnostics
-        egui::SidePanel::right("diag").default_width(370.0).show(ctx, |ui| {
+        // Never let the diagnostics column take the canvas below MIN_CANVAS_PX (it grows to fit its widest row otherwise).
+        const MIN_CANVAS_PX: f32 = 290.0;
+        let right_max = (ctx.screen_rect().width() - left_w - MIN_CANVAS_PX).clamp(300.0, 560.0);
+        egui::SidePanel::right("diag").default_width(370.0).max_width(right_max).show(ctx, |ui| {
             let d = snap.diag.clone();
             egui::ScrollArea::vertical().show(ui, |ui| {
                 // conformance card: always visible, reasons spelled out instead of hidden in a tooltip
                 let (col, txt) = badge_style(snap.badge);
-                egui::Frame::none().fill(col.gamma_multiply(0.12)).stroke(egui::Stroke::new(1.0, col.gamma_multiply(0.6)))
-                    .rounding(6.0).inner_margin(8.0).show(ui, |ui| {
+                egui::Frame::NONE.fill(col.gamma_multiply(0.12)).stroke(egui::Stroke::new(1.0_f32, col.gamma_multiply(0.6)))
+                    .corner_radius(6.0).inner_margin(8.0).show(ui, |ui| {
                         ui.set_min_width(ui.available_width());
                         ui.label(RichText::new(txt).strong().size(14.0).color(col));
                         for (i, r) in snap.badge_reasons.iter().enumerate() {
@@ -587,7 +761,11 @@ impl eframe::App for App {
         });
 
         // ------------------------------------------------------------------ 3D view
-        egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| { self.view.show(ui, &snap); });
+        egui::CentralPanel::default()
+            .frame(egui::Frame::NONE)
+            .show(ctx, |ui| {
+                self.view.show(ui, &snap);
+            });
 
         // ------------------------------------------------------------------ sky-map commands (diagnostic only)
         let want = (self.sky_body, self.sky.focus, self.sky.fov);
@@ -596,7 +774,10 @@ impl eframe::App for App {
             send(Command::SetSkyFocus(want.1, want.2));
             self.sent_sky = Some(want);
         }
-        if self.sent_sky_on != Some(self.show_sky) { send(Command::SetSkyEnabled(self.show_sky)); self.sent_sky_on = Some(self.show_sky); }
-        ctx.request_repaint_after(Duration::from_millis(100));      // fallback; sim thread wakes us on every publish
+        if self.sent_sky_on != Some(self.show_sky) {
+            send(Command::SetSkyEnabled(self.show_sky));
+            self.sent_sky_on = Some(self.show_sky);
+        }
+        ctx.request_repaint_after(Duration::from_millis(100)); // fallback; sim thread wakes us on every publish
     }
 }

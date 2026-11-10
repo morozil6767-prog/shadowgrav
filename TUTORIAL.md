@@ -43,7 +43,7 @@ Also read `labels` and `status` in the result: they say when a run is outside th
 
 `shadowgrav-core/scenarios/two_body_thin.json`: tau_c = 1e-6, bodies 10 a0 apart, a0 = (3/(4 pi 2.39e5))^(1/3) = 0.01 (the m=1 sphere radius).
 Hand calculation: F = G m^2 / r^2 with G = m = 1, r = 10 a0, so F = 1/(10 a0)^2.
-Engine: F = 100.07463; hand: 100.07471. They differ by 7.5e-6, which is the thin-limit saturation error of tau_c = 1e-6.
+Engine: F = 100.07463; hand: 100.07471. They differ by 7.5e-5 absolute, 7.5e-7 relative, which is the thin-limit saturation error of tau_c = 1e-6 (the run's delta_sat).
 
 ## 3. Check B, the screening ratio of three collinear spheres
 
@@ -69,7 +69,7 @@ The engine agrees to 1e-5 to 3e-5 at this quadrature tier. R falls from 1 (addit
 
 Add `"diagnostics": {"reference": true}`. The result's `reference.summary` says how the production engine compares with an independent
 all-rays integration of the same shadow model, and whether the difference exceeds the reference's own resolution estimate.
-Example (`partial_overlap_3d.json`): 2.8e-5, reference's own estimate 1.7e-5, "exceeds it": a reminder that this geometry is only good to the stated tier. If a world is outside the reference's scope the result says "not checked", never "agrees".
+Example (`partial_overlap_3d.json`): max difference 2.8e-5 against a reference quadrature error of about 1.7e-5, so "the gap exceeds it": a reminder that this geometry is only good to the stated tier. If a world is outside the reference's scope the result says "not checked", never "agrees".
 
 ## 6. Python
 

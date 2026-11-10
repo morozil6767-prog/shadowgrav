@@ -16,17 +16,62 @@ use shadowgrav_core::state::*;
 use shadowgrav_core::*;
 use std::f64::consts::PI;
 
-struct Case { x: [[f64; 3]; 3], tau: f64, na0: f64, f0: [[f64; 3]; 3] }
+struct Case {
+    x: [[f64; 3]; 3],
+    tau: f64,
+    na0: f64,
+    f0: [[f64; 3]; 3],
+}
 
 const CASES: [Case; 4] = [
-    Case { x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 2.0, 0.0]], tau: 1.0, na0: 2.883828195857e-03,
-           f0: [[2.461503821854e-02, 1.638943762843e-03, 0.000000000000e+00], [1.161179720293e-01, 1.309311394851e-01, 0.000000000000e+00], [-1.408038546006e-01, -1.325765920043e-01, 0.000000000000e+00]] },
-    Case { x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 2.0, 0.0]], tau: 5.0, na0: 1.130961154528e-02,
-           f0: [[4.779561788977e-02, 3.172244878227e-03, 0.000000000000e+00], [2.273595879769e-01, 2.563638462369e-01, 0.000000000000e+00], [-2.756946733403e-01, -2.595856507541e-01, 0.000000000000e+00]] },
-    Case { x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 1.4, 1.4]], tau: 1.0, na0: 3.545271780031e-03,
-           f0: [[2.460682576313e-02, 1.147145746413e-03, 1.147145746413e-03], [1.181067783801e-01, 9.304396208508e-02, 9.304396208508e-02], [-1.428006712677e-01, -9.419671338546e-02, -9.419671338546e-02]] },
-    Case { x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 1.4, 1.4]], tau: 5.0, na0: 1.338738730813e-02,
-           f0: [[4.771327381463e-02, 2.216052018021e-03, 2.216052018021e-03], [2.312536810666e-01, 1.821805575287e-01, 1.821805575287e-01], [-2.796044506706e-01, -1.844376505188e-01, -1.844376505188e-01]] }
+    Case {
+        x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 2.0, 0.0]],
+        tau: 1.0,
+        na0: 2.883828195857e-03,
+        f0: [
+            [2.461503821854e-02, 1.638943762843e-03, 0.000000000000e+00],
+            [1.161179720293e-01, 1.309311394851e-01, 0.000000000000e+00],
+            [-1.408038546006e-01, -1.325765920043e-01, 0.000000000000e+00],
+        ],
+    },
+    Case {
+        x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 2.0, 0.0]],
+        tau: 5.0,
+        na0: 1.130961154528e-02,
+        f0: [
+            [4.779561788977e-02, 3.172244878227e-03, 0.000000000000e+00],
+            [2.273595879769e-01, 2.563638462369e-01, 0.000000000000e+00],
+            [-2.756946733403e-01, -2.595856507541e-01, 0.000000000000e+00],
+        ],
+    },
+    Case {
+        x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 1.4, 1.4]],
+        tau: 1.0,
+        na0: 3.545271780031e-03,
+        f0: [
+            [2.460682576313e-02, 1.147145746413e-03, 1.147145746413e-03],
+            [1.181067783801e-01, 9.304396208508e-02, 9.304396208508e-02],
+            [
+                -1.428006712677e-01,
+                -9.419671338546e-02,
+                -9.419671338546e-02,
+            ],
+        ],
+    },
+    Case {
+        x: [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 1.4, 1.4]],
+        tau: 5.0,
+        na0: 1.338738730813e-02,
+        f0: [
+            [4.771327381463e-02, 2.216052018021e-03, 2.216052018021e-03],
+            [2.312536810666e-01, 1.821805575287e-01, 1.821805575287e-01],
+            [
+                -2.796044506706e-01,
+                -1.844376505188e-01,
+                -1.844376505188e-01,
+            ],
+        ],
+    },
 ];
 
 /// (max over bodies of |dF|/|F| against the sharp vectors, relative error of Delta^NA of body 0, max |Delta^NA| of bodies 1, 2).
@@ -37,8 +82,17 @@ fn measure(c: &Case, val: Option<Validation>, label: &str) -> (f64, f64, f64) {
     let xs: Vec<V3> = c.x.iter().map(|p| scale(p, a)).collect();
     let mut opt = default_options(Mode::V0);
     opt.validation = val;
-    let w = World::new(body_particles(xs, vec![[0.0; 3]; 3]), g, opt, SimConfig::fixed(1e-4)).unwrap();
-    assert!(w.force.status.overlap_present, "{label}: overlap must be detected");
+    let w = World::new(
+        body_particles(xs, vec![[0.0; 3]; 3]),
+        g,
+        opt,
+        SimConfig::fixed(1e-4),
+    )
+    .unwrap();
+    assert!(
+        w.force.status.overlap_present,
+        "{label}: overlap must be detected"
+    );
     let mut worst = 0.0f64;
     for k in 0..3 {
         let gam = w.g.xi * w.g.pi_flux() * w.dv.a_eff[k] / (4.0 * PI);
@@ -55,21 +109,29 @@ fn measure(c: &Case, val: Option<Validation>, label: &str) -> (f64, f64, f64) {
 
 /// Standard mode (f = 0.15) is a coarse quadrature on partially overlapping discs. These are REGRESSION bounds (about 1.5x
 /// the values measured against the noisy oracle: 9.6e-4 and 8.6%), not accuracy claims; the printed numbers are the claim.
-#[test] fn standard_mode_vs_sharp_lens_oracle() {
+#[test]
+fn standard_mode_vs_sharp_lens_oracle() {
     for c in CASES.iter() {
         let (v, n, other) = measure(c, None, "standard");
         assert!(v <= 1.5e-3, "standard: |dF|/|F| = {v:e}");
         assert!(n <= 0.13, "standard: Delta^NA relative error {n:e}");
-        assert!(other <= 1e-12, "bodies without sky overlap must have Delta^NA = 0, got {other:e}");
+        assert!(
+            other <= 1e-12,
+            "bodies without sky overlap must have Delta^NA = 0, got {other:e}"
+        );
     }
 }
 
 /// Validation mode must meet the Spec 4.3 accuracy target (relative force error of at most 1e-4 attributable to the
 /// correction). Measured against the noisy oracle: 3.7e-5 with oracle noise up to 1.7e-5, i.e. at most 5.4e-5 here.
-#[test] fn validation_mode_meets_spec_4_3_target_vs_sharp_lens_oracle() {
+#[test]
+fn validation_mode_meets_spec_4_3_target_vs_sharp_lens_oracle() {
     for c in CASES.iter() {
         let (v, n, other) = measure(c, Some(Validation::default_validation()), "validation");
-        assert!(v <= 1e-4, "validation: |dF|/|F| = {v:e} (Spec 4.3 target 1e-4)");
+        assert!(
+            v <= 1e-4,
+            "validation: |dF|/|F| = {v:e} (Spec 4.3 target 1e-4)"
+        );
         assert!(n <= 1e-2, "validation: Delta^NA relative error {n:e}");
         assert!(other <= 1e-12);
     }
@@ -77,11 +139,15 @@ fn measure(c: &Case, val: Option<Validation>, label: &str) -> (f64, f64, f64) {
 
 /// Self-consistency of the quadrature levels on partial overlap: the certified preset must be at least as close to the
 /// sharp oracle as validation mode is (no regression from refining). Slow; run with `-- --ignored --nocapture`.
-#[test] #[ignore = "certified-level quadrature on partial overlap: cost unmeasured"]
+#[test]
+#[ignore = "certified-level quadrature on partial overlap: cost unmeasured"]
 fn certified_mode_vs_sharp_lens_oracle() {
     for c in CASES.iter() {
         let (vv, _, _) = measure(c, Some(Validation::default_validation()), "validation");
         let (vc, _, _) = measure(c, Some(Validation::certified()), "certified");
-        assert!(vc <= vv * 1.05 + 1e-9, "certified {vc:e} worse than validation {vv:e}");
+        assert!(
+            vc <= vv * 1.05 + 1e-9,
+            "certified {vc:e} worse than validation {vv:e}"
+        );
     }
 }

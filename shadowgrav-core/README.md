@@ -42,7 +42,7 @@ Use `TRACEABILITY.md` as the detailed specification-to-test ledger. It marks the
 
 ## 3. Build
 
-Requires Rust >= 1.70 for the core crate (the native UI crate declares Rust >= 1.76). The first build needs access to the
+Requires Rust >= 1.80 for a default build: locked rayon 1.12.0 and rayon-core 1.13.0 reject 1.79.0. `cargo check -p shadowgrav-core` on 1.80.0 succeeds inside the workspace. `--no-default-features` (no rayon) checks on 1.65.0 and fails on 1.64.0 because `let...else` in `skymap.rs` is unstable there. Building the UI workspace needs a newer cargo: 1.83.0 cannot parse locked `calloop` 0.14.5 (`edition2024`); 1.85.0 parses it and then stops on dependency `rust-version`. The UI crate declares Rust >= 1.88. The first build needs access to the
 crates.io index (Cargo resolves the optional `libm` dependency even when the feature is off).
 
 ```

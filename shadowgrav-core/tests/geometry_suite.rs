@@ -1,11 +1,11 @@
 //! Broader geometry battery: multi-config regression for the production force path.
 use shadowgrav_core::diagnostics::{conservation, delta_na, pair_effective_g};
+use shadowgrav_core::driver::RHO0;
 use shadowgrav_core::driver::{
     default_options, run_orbit, screening_ratio, three_body_collinear, two_body_orbit,
 };
 use shadowgrav_core::geom::norm;
 use shadowgrav_core::state::{SimConfig, World};
-use shadowgrav_core::driver::RHO0;
 use shadowgrav_core::{advance, Kind, Mode, Options, Particles, Validation};
 
 fn opt_val() -> Options {
@@ -26,7 +26,13 @@ fn world_from_positions(xs: Vec<[f64; 3]>, mut opt: Options) -> World {
         kind: vec![Kind::Body; n],
     };
     opt.instrumented = true;
-    World::new(p, shadowgrav_core::Globals::defaults(), opt, SimConfig::fixed(1e-3)).expect("world")
+    World::new(
+        p,
+        shadowgrav_core::Globals::defaults(),
+        opt,
+        SimConfig::fixed(1e-3),
+    )
+    .expect("world")
 }
 
 #[test]
@@ -42,21 +48,53 @@ fn collinear_screening_standard_within_provisional() {
 fn collinear_screening_validation_tighter_than_standard() {
     let mut w = three_body_collinear(20.0, 1e-4, 0).unwrap();
     let err_std = (screening_ratio(&w) - 0.8).abs();
-    w.apply_options(|o| o.validation = Some(Validation::default_validation())).unwrap();
+    w.apply_options(|o| o.validation = Some(Validation::default_validation()))
+        .unwrap();
     let err_val = (screening_ratio(&w) - 0.8).abs();
-    assert!(err_val < err_std, "validation {err_val} should beat standard {err_std}");
+    assert!(
+        err_val < err_std,
+        "validation {err_val} should beat standard {err_std}"
+    );
     assert!(err_val < 5e-5, "validation |R-0.8|={err_val}");
 }
 
 #[test]
 fn partial_and_3d_layouts_finite_forces_and_nonnegative_delta_na() {
-    let layouts = [
-        vec![[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 2.0, 0.0]],
-        vec![[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 1.4, 1.4]],
-        vec![[0.0, 0.0, 0.0], [8.0, 0.0, 0.0], [6.0, 5.0, 0.0], [4.0, -4.0, 2.0]],
+    // Positions are in units of the sphere radius a. (In absolute units these layouts put every pair >= 280 a apart, so no
+    // disc overlapped and this test never reached the overlap correction.) The first two layouts are genuine partial
+    // overlaps on the sky of body 0 (separation 0.9 x (theta_1 + theta_2)); the third is a dilute 3D layout with no overlap.
+    let a = shadowgrav_core::driver::sphere_radius(1.0, RHO0);
+    let layouts: [(Vec<[f64; 3]>, bool); 3] = [
+        (
+            vec![[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 2.0, 0.0]],
+            true,
+        ),
+        (
+            vec![[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [12.0, 1.4, 1.4]],
+            true,
+        ),
+        (
+            vec![
+                [0.0, 0.0, 0.0],
+                [8.0, 0.0, 0.0],
+                [6.0, 5.0, 0.0],
+                [4.0, -4.0, 2.0],
+            ],
+            false,
+        ),
     ];
-    for xs in layouts {
+    for (units, expect_overlap) in layouts {
+        let xs: Vec<[f64; 3]> = units
+            .iter()
+            .map(|p| [p[0] * a, p[1] * a, p[2] * a])
+            .collect();
         let w = world_from_positions(xs, opt_val());
+        if expect_overlap {
+            assert!(
+                w.force.status.overlap_present,
+                "layout {units:?} (units of a) must overlap on the sky of body 0"
+            );
+        }
         for i in 0..w.n() {
             assert!(norm(&w.force.f_total[i]).is_finite());
             assert!(norm(&w.force.f_corr[i]).is_finite());
@@ -77,8 +115,8 @@ fn n12_ring_momentum_residual_under_validation() {
     let mut sum = [0.0; 3];
     let mut abs = 0.0;
     for i in 0..w.n() {
-        for c in 0..3 {
-            sum[c] += w.force.f_total[i][c];
+        for (c, slot) in sum.iter_mut().enumerate() {
+            *slot += w.force.f_total[i][c];
         }
         abs += norm(&w.force.f_total[i]);
     }
@@ -98,7 +136,12 @@ fn geff_matches_expected_when_disjoint() {
     for pg in pairs {
         if let Some(exp) = pg.expected {
             let rel = (pg.g_eff - exp).abs() / exp.abs().max(1e-300);
-            assert!(rel < 1e-9, "G_eff {} vs expected {} rel={rel}", pg.g_eff, exp);
+            assert!(
+                rel < 1e-9,
+                "G_eff {} vs expected {} rel={rel}",
+                pg.g_eff,
+                exp
+            );
         }
     }
 }
@@ -107,8 +150,16 @@ fn geff_matches_expected_when_disjoint() {
 fn twenty_orbit_energy_and_angular_momentum_bounded() {
     let setup = two_body_orbit(1e-3, 400, Mode::V0, 1e3).expect("orbit setup");
     let report = run_orbit(setup, 20).expect("20 orbits");
-    assert!(report.max_de < 1e-4, "max dE/E={} over 20 orbits", report.max_de);
-    assert!(report.max_dl < 1e-10, "max dL/L={} over 20 orbits", report.max_dl);
+    assert!(
+        report.max_de < 1e-4,
+        "max dE/E={} over 20 orbits",
+        report.max_de
+    );
+    assert!(
+        report.max_dl < 1e-10,
+        "max dL/L={} over 20 orbits",
+        report.max_dl
+    );
 }
 
 #[test]
@@ -138,7 +189,7 @@ fn advance_100_steps_n7_no_nonfinite() {
 #[test]
 fn two_body_force_is_translation_and_rotation_equivariant() {
     use shadowgrav_core::geom::{add, dot, scale, sub};
-    use shadowgrav_core::{Particles, Globals};
+    use shadowgrav_core::{Globals, Particles};
     let base = [0.7, -1.1, 0.4];
     let offset = [2.5, -3.0, 0.75];
     let shifted = add(&base, &offset);
@@ -147,11 +198,18 @@ fn two_body_force_is_translation_and_rotation_equivariant() {
         o.parallel = false;
         World::new(
             Particles {
-                x: vec![x0, x1], v: vec![[0.0; 3]; 2], m: vec![1.0; 2],
-                rho: vec![RHO0; 2], delta: vec![0.0; 2], kind: vec![Kind::Body; 2],
+                x: vec![x0, x1],
+                v: vec![[0.0; 3]; 2],
+                m: vec![1.0; 2],
+                rho: vec![RHO0; 2],
+                delta: vec![0.0; 2],
+                kind: vec![Kind::Body; 2],
             },
-            Globals::defaults(), o, SimConfig::fixed(1e-3),
-        ).expect("valid pair")
+            Globals::defaults(),
+            o,
+            SimConfig::fixed(1e-3),
+        )
+        .expect("valid pair")
     };
     let origin = make([0.0; 3], base);
     let translated = make(offset, shifted);
@@ -164,10 +222,23 @@ fn two_body_force_is_translation_and_rotation_equivariant() {
         let d = sub(&a, &b);
         norm(&d) / norm(&b).max(1e-300)
     };
-    assert!(close(f, ft) < 2e-13, "translation changed pair force: {f:?} vs {ft:?}");
-    assert!(close(rotate_z(f), fr) < 2e-13, "rotation changed pair force: {:?} vs {fr:?}", rotate_z(f));
+    assert!(
+        close(f, ft) < 2e-13,
+        "translation changed pair force: {f:?} vs {ft:?}"
+    );
+    assert!(
+        close(rotate_z(f), fr) < 2e-13,
+        "rotation changed pair force: {:?} vs {fr:?}",
+        rotate_z(f)
+    );
     let c = scale(&base, 1.0 / norm(&base));
-    assert!(norm(&[f[1] * c[2] - f[2] * c[1], f[2] * c[0] - f[0] * c[2], f[0] * c[1] - f[1] * c[0]]) < 1e-12 * norm(&f));
+    assert!(
+        norm(&[
+            f[1] * c[2] - f[2] * c[1],
+            f[2] * c[0] - f[0] * c[2],
+            f[0] * c[1] - f[1] * c[0]
+        ]) < 1e-12 * norm(&f)
+    );
     assert!(dot(&f, &c) > 0.0, "force must point toward the occluder");
     assert!(norm(&add(&origin.force.f_total[0], &origin.force.f_total[1])) < 1e-12 * norm(&f));
 }
@@ -187,16 +258,29 @@ fn collimated_nonoverlapping_bodies_exercise_nonadditive_stress_path() {
     g.kappa0 = shadowgrav_core::driver::kappa0_for_tau(0.5, 1.0, RHO0);
     let n = xs.len();
     let p = Particles {
-        x: xs, v: vec![[0.0; 3]; n], m: vec![1.0; n], rho: vec![RHO0; n],
-        delta: vec![0.0; n], kind: vec![Kind::Body; n],
+        x: xs,
+        v: vec![[0.0; 3]; n],
+        m: vec![1.0; n],
+        rho: vec![RHO0; n],
+        delta: vec![0.0; n],
+        kind: vec![Kind::Body; n],
     };
     let mut o = opt_val();
     o.instrumented = false;
     let w = World::new(p, g, o, SimConfig::fixed(1e-4)).expect("stress geometry");
-    assert!(w.force.status.overlap_present, "the engineered angular discs must overlap");
+    assert!(
+        w.force.status.overlap_present,
+        "the engineered angular discs must overlap"
+    );
     for (i, f) in w.force.f_total.iter().enumerate() {
-        assert!(f.iter().all(|v| v.is_finite()), "non-finite force on body {i}: {f:?}");
+        assert!(
+            f.iter().all(|v| v.is_finite()),
+            "non-finite force on body {i}: {f:?}"
+        );
     }
     let na = delta_na(&w, 0);
-    assert!(na.is_finite() && na > 0.0, "overlap correction should be active; Delta^NA={na}");
+    assert!(
+        na.is_finite() && na > 0.0,
+        "overlap correction should be active; Delta^NA={na}"
+    );
 }

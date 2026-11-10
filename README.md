@@ -38,7 +38,7 @@ Read **CLAIMS.md** before quoting model results. Read **SCIENTIFIC_MANUAL.md** f
 
 ### Requirements
 
-- Rust stable (1.76+ recommended for the UI)
+- Rust. `rust-toolchain.toml` pins 1.88.0, the tested workspace and UI minimum. rustc 1.87.0 rejects locked `icu_*` 2.4.0 and `image` 0.25.10. The UI uses eframe 0.32.0 (egui 0.32.3). `uuid` is locked at 1.26.1 because 1.27+ needs rustc 1.89 and zbus only requires `^1.8`. rustc 1.83.0 cannot parse locked `calloop` 0.14.5 (`edition2024`). Core built outside the workspace (`scripts/core-isolated-msrv.sh`, `shadowgrav-core/Cargo.lock`, rayon 1.12.0) minimum is 1.80.0. `--no-default-features` checks on 1.65.0 and fails on 1.64.0 (`let...else`).
 - Windows / macOS / Linux desktop for the native UI
 
 ### Build and run

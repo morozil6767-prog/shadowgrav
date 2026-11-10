@@ -1,0 +1,20 @@
+# Workspace guidance. This pins commands run inside the workspace to the tested
+# UI/workspace floor. It is not a hosted-CI result.
+#
+# Tested floors, with the version that failed immediately before:
+# - Workspace and shadowgrav-ui: 1.88.0. rustc 1.87.0 rejects locked icu_* 2.4.0
+#   and image 0.25.10. eframe 0.32 pulls uuid; 1.27+ needs rustc 1.89, so the
+#   lock pins uuid 1.26.1 (zbus asks for ^1.8) and the UI floor stays 1.88.0.
+#   rustc 1.83.0 still cannot parse calloop 0.14.5 (edition2024).
+# - shadowgrav-core built outside the workspace, using shadowgrav-core/Cargo.lock
+#   (rayon 1.12.0, rayon-core 1.13.0, libm 0.2.16): 1.80.0. rustc 1.79.0 is
+#   rejected by those rayon crates. `--no-default-features` (no rayon) checks
+#   on 1.65.0 and fails on 1.64.0 because `let...else` in skymap.rs is unstable.
+#   The package rust-version is 1.80 because the default build includes rayon.
+#
+# Stable (1.99.1 in the WS2 run) also builds. Use `rustup run stable` for that.
+
+[toolchain]
+channel = "1.88.0"
+components = ["clippy", "rustfmt"]
+profile = "minimal"

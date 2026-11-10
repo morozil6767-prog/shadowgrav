@@ -31,18 +31,27 @@ pub struct ReferenceResult {
 }
 
 /// Direct evaluation at one resolution (n_chi x n_phi samples per occluder disc, midpoint rule).
-fn integrate(p: &Particles, dv: &Derived, g: &Globals, n_chi: usize, n_phi: usize) -> (Vec<V3>, u64) {
+fn integrate(
+    p: &Particles,
+    dv: &Derived,
+    g: &Globals,
+    n_chi: usize,
+    n_phi: usize,
+) -> (Vec<V3>, u64) {
     let n = p.x.len();
     let gam_scale = g.xi * g.pi_flux() / (4.0 * PI);
     let mut out = vec![[0.0; 3]; n];
     let mut evals = 0u64;
-    for k in 0..n {
+    for (k, out_k) in out.iter_mut().enumerate() {
         // occluders as seen from k: centre vector, distance, silhouette half-angle, beta
-        let occ: Vec<(V3, f64, f64, f64, f64)> = (0..n).filter(|&j| j != k).map(|j| {
-            let c = sub(&p.x[j], &p.x[k]);
-            let d = norm(&c);
-            (c, d, dv.a[j], dv.beta[j], (dv.a[j] / d).asin())
-        }).collect();
+        let occ: Vec<(V3, f64, f64, f64, f64)> = (0..n)
+            .filter(|&j| j != k)
+            .map(|j| {
+                let c = sub(&p.x[j], &p.x[k]);
+                let d = norm(&c);
+                (c, d, dv.a[j], dv.beta[j], (dv.a[j] / d).asin())
+            })
+            .collect();
         let mut acc = [0.0; 3];
         for (jj, &(c, d, a, _beta, theta)) in occ.iter().enumerate() {
             let chat = scale(&c, 1.0 / d);
@@ -67,49 +76,84 @@ fn integrate(p: &Particles, dv: &Derived, g: &Globals, n_chi: usize, n_phi: usiz
                     let (mut tot, mut own) = (0.0, 0.0);
                     for (i2, &(c2, _d2, a2, b2, _t2)) in occ.iter().enumerate() {
                         let t = dot(&nvec, &c2);
-                        if t <= 0.0 { continue; }
+                        if t <= 0.0 {
+                            continue;
+                        }
                         let imp2 = dot(&c2, &c2) - t * t;
                         if imp2 < a2 * a2 {
                             let l = b2 * 2.0 * (a2 * a2 - imp2).sqrt();
                             tot += l;
-                            if i2 == jj { own = l; }
+                            if i2 == jj {
+                                own = l;
+                            }
                         }
                     }
                     evals += occ.len() as u64;
-                    if tot <= 0.0 { continue; }
+                    if tot <= 0.0 {
+                        continue;
+                    }
                     let w = -mathx::expm1(-tot) * (own / tot) * dom_chi * (2.0 * PI / n_phi as f64);
                     acc = add(&acc, &scale(&nvec, w));
                 }
             }
             let _ = a;
         }
-        out[k] = scale(&acc, gam_scale * dv.a_eff[k]);
+        *out_k = scale(&acc, gam_scale * dv.a_eff[k]);
     }
     (out, evals)
 }
 
 fn check_scope(p: &Particles, dv: &Derived, g: &Globals, mode: Mode) -> Result<(), CoreError> {
-    if mode != Mode::V0 { return Err(CoreError::Config("reference mode: V0 only")); }
-    if g.alpha_bg != 0.0 { return Err(CoreError::Config("reference mode: alpha_bg = 0 only")); }
-    if p.kind.iter().any(|k| *k != Kind::Body) { return Err(CoreError::Config("reference mode: bodies only (no probes)")); }
+    if mode != Mode::V0 {
+        return Err(CoreError::Config("reference mode: V0 only"));
+    }
+    if g.alpha_bg != 0.0 {
+        return Err(CoreError::Config("reference mode: alpha_bg = 0 only"));
+    }
+    if p.kind.iter().any(|k| *k != Kind::Body) {
+        return Err(CoreError::Config("reference mode: bodies only (no probes)"));
+    }
     let n = p.x.len();
-    for k in 0..n { for j in 0..n {
-        if j != k && norm(&sub(&p.x[j], &p.x[k])) <= dv.a[j] { return Err(CoreError::Config("reference mode: exterior pairs only (interior target)")); }
-    } }
+    for k in 0..n {
+        for j in 0..n {
+            if j != k && norm(&sub(&p.x[j], &p.x[k])) <= dv.a[j] {
+                return Err(CoreError::Config(
+                    "reference mode: exterior pairs only (interior target)",
+                ));
+            }
+        }
+    }
     Ok(())
 }
 
 /// All-rays reference forces for every body. `n_chi` x `n_phi` samples per occluder disc; the error estimate uses 2x refinement.
-pub fn reference_forces(p: &Particles, dv: &Derived, g: &Globals, mode: Mode, n_chi: usize, n_phi: usize) -> Result<ReferenceResult, CoreError> {
+pub fn reference_forces(
+    p: &Particles,
+    dv: &Derived,
+    g: &Globals,
+    mode: Mode,
+    n_chi: usize,
+    n_phi: usize,
+) -> Result<ReferenceResult, CoreError> {
     check_scope(p, dv, g, mode)?;
-    if p.x.len() > 50 { return Err(CoreError::Config("reference mode is specified for N <= 50")); }
+    if p.x.len() > 50 {
+        return Err(CoreError::Config("reference mode is specified for N <= 50"));
+    }
     let (coarse, _) = integrate(p, dv, g, n_chi, n_phi);
     let (fine, evaluations) = integrate(p, dv, g, 2 * n_chi, 2 * n_phi);
     // normalised by the LARGEST force: a body whose force vanishes by symmetry must not dominate the estimate
     let scale_f = fine.iter().map(norm).fold(0.0f64, f64::max);
     let mut est = 0.0f64;
-    if scale_f > 0.0 { for k in 0..fine.len() { est = est.max(norm(&sub(&fine[k], &coarse[k])) / scale_f); } }
-    Ok(ReferenceResult { f: fine, est_rel_err: est, evaluations })
+    if scale_f > 0.0 {
+        for k in 0..fine.len() {
+            est = est.max(norm(&sub(&fine[k], &coarse[k])) / scale_f);
+        }
+    }
+    Ok(ReferenceResult {
+        f: fine,
+        est_rel_err: est,
+        evaluations,
+    })
 }
 
 /// Spec 6 item 11: the brute-force comparison error of the live engine forces, for a world in reference scope (N <= 50).
@@ -123,8 +167,16 @@ pub struct ReferenceCheck {
 }
 pub fn reference_check(w: &World, n_chi: usize, n_phi: usize) -> Result<ReferenceCheck, CoreError> {
     let r = reference_forces(&w.p, &w.dv, &w.g, w.opt.mode, n_chi, n_phi)?;
-    let scale_f = r.f.iter().map(norm).fold(0.0f64, f64::max);   // largest force: see `reference_forces`
+    let scale_f = r.f.iter().map(norm).fold(0.0f64, f64::max); // largest force: see `reference_forces`
     let mut worst = 0.0f64;
-    if scale_f > 0.0 { for k in 0..r.f.len() { worst = worst.max(norm(&sub(&w.force.f_total[k], &r.f[k])) / scale_f); } }
-    Ok(ReferenceCheck { max_rel_diff: worst, reference_est_err: r.est_rel_err, evaluations: r.evaluations })
+    if scale_f > 0.0 {
+        for k in 0..r.f.len() {
+            worst = worst.max(norm(&sub(&w.force.f_total[k], &r.f[k])) / scale_f);
+        }
+    }
+    Ok(ReferenceCheck {
+        max_rel_diff: worst,
+        reference_est_err: r.est_rel_err,
+        evaluations: r.evaluations,
+    })
 }

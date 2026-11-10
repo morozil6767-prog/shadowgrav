@@ -33,11 +33,12 @@ set +e
 cargo test --release --locked --workspace 2>&1 | tee "$OUT/workspace-tests.txt"
 test_code=${PIPESTATUS[0]}
 cargo build --release --locked -p shadowgrav-ui 2>&1 | tee "$OUT/ui-build.txt"
-cargo run --release --locked -p shadowgrav-core --bin sgrun -- repro-hash 2>&1 | tee "$OUT/repro-hash.txt" || true
 build_code=${PIPESTATUS[0]}
+cargo run --release --locked -p shadowgrav-core --bin sgrun -- repro-hash 2>&1 | tee "$OUT/repro-hash.txt"
+hash_code=${PIPESTATUS[0]}
 set -e
-printf 'machine_info_exit=%s\nworkspace_test_exit=%s\nui_build_exit=%s\n' \
-  "$machine_code" "$test_code" "$build_code" | tee "$OUT/result.txt"
+printf 'machine_info_exit=%s\nworkspace_test_exit=%s\nui_build_exit=%s\nrepro_hash_exit=%s\n' \
+  "$machine_code" "$test_code" "$build_code" "$hash_code" | tee "$OUT/result.txt"
 
 launch_code=0
 if [[ "${1:-}" == "--launch-ui" && "$test_code" -eq 0 && "$build_code" -eq 0 ]]; then
@@ -60,7 +61,7 @@ For native-window evidence, run this script with --launch-ui on a desktop sessio
 While the window is open, verify the checklist in MACHINE_PROOF.md and save screenshots
 into this directory. A successful compile alone is not a successful UI proof.
 
-Exit codes: machine info=$machine_code, workspace tests=$test_code, UI build=$build_code, UI launch=$launch_code
+Exit codes: machine info=$machine_code, workspace tests=$test_code, UI build=$build_code, repro-hash=$hash_code, UI launch=$launch_code
 EOF
 
-[[ "$machine_code" -eq 0 && "$test_code" -eq 0 && "$build_code" -eq 0 && "$launch_code" -eq 0 ]]
+[[ "$machine_code" -eq 0 && "$test_code" -eq 0 && "$build_code" -eq 0 && "$hash_code" -eq 0 && "$launch_code" -eq 0 ]]
