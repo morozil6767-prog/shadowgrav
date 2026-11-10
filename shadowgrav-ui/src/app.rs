@@ -81,6 +81,8 @@ pub struct App {
     hist_na: VecDeque<f64>,
     last_diag_seq: u64,
     last_export_msg: Option<String>,
+    /// Extra pixels withheld from the right panel when the painted canvas is still under MIN_CANVAS_PX.
+    canvas_hold: f32,
 }
 const HIST: usize = 300;
 
@@ -128,6 +130,7 @@ impl App {
             hist_na: VecDeque::new(),
             last_diag_seq: u64::MAX,
             last_export_msg: None,
+            canvas_hold: 0.0,
         }
     }
 
@@ -481,7 +484,13 @@ impl eframe::App for App {
 
         // ------------------------------------------------------------------ left: scene + parameters + view
         let left_w = egui::SidePanel::left("params").default_width(300.0).show(ctx, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
+            // auto_shrink on a vertical-only ScrollArea follows content width, so a long row
+            // widens the panel. Both axes with shrink off keep that width inside the panel.
+            egui::ScrollArea::both()
+                .auto_shrink([false, false])
+                .show(ui, |ui| {
+                ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Wrap);
+                ui.set_max_width(ui.available_width());
                 header(ui, "Scene");
                 egui::ComboBox::from_label("preset").selected_text(self.spec.kind.label()).show_ui(ui, |ui| {
                     for k in PresetKind::ALL {
@@ -622,10 +631,17 @@ impl eframe::App for App {
         // ------------------------------------------------------------------ right: conformance + diagnostics
         // Never let the diagnostics column take the canvas below MIN_CANVAS_PX (it grows to fit its widest row otherwise).
         const MIN_CANVAS_PX: f32 = 290.0;
-        let right_max = (ctx.screen_rect().width() - left_w - MIN_CANVAS_PX).clamp(300.0, 560.0);
+        // canvas_hold is 0 until a frame measures the central view under 290. A previous
+        // 960x700 capture was 287 px; the hold is what closes that gap if max_width alone does not.
+        let right_max = (ctx.screen_rect().width() - left_w - MIN_CANVAS_PX - self.canvas_hold)
+            .clamp(300.0, 560.0);
         egui::SidePanel::right("diag").default_width(370.0).max_width(right_max).show(ctx, |ui| {
             let d = snap.diag.clone();
-            egui::ScrollArea::vertical().show(ui, |ui| {
+            egui::ScrollArea::both()
+                .auto_shrink([false, false])
+                .show(ui, |ui| {
+                ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Wrap);
+                ui.set_max_width(ui.available_width());
                 // conformance card: always visible, reasons spelled out instead of hidden in a tooltip
                 let (col, txt) = badge_style(snap.badge);
                 egui::Frame::NONE.fill(col.gamma_multiply(0.12)).stroke(egui::Stroke::new(1.0_f32, col.gamma_multiply(0.6)))
@@ -761,11 +777,19 @@ impl eframe::App for App {
         });
 
         // ------------------------------------------------------------------ 3D view
+        let mut canvas_w = 0.0_f32;
         egui::CentralPanel::default()
             .frame(egui::Frame::NONE)
             .show(ctx, |ui| {
+                canvas_w = ui.available_width();
                 self.view.show(ui, &snap);
             });
+        let deficit = MIN_CANVAS_PX - canvas_w;
+        if deficit > 0.5 {
+            self.canvas_hold = (self.canvas_hold + deficit).min(32.0);
+        } else if self.canvas_hold > 0.0 && deficit < -1.0 {
+            self.canvas_hold = (self.canvas_hold + deficit).max(0.0);
+        }
 
         // ------------------------------------------------------------------ sky-map commands (diagnostic only)
         let want = (self.sky_body, self.sky.focus, self.sky.fov);
