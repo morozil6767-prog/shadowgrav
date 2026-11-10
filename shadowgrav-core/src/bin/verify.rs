@@ -307,6 +307,7 @@ fn main() {
                     f_v: fv,
                     f_s: fs,
                     ell_cap: cap,
+                    grade: 0.0,
                 }),
             );
         }
@@ -331,6 +332,7 @@ fn main() {
                     f_v: fv,
                     f_s: fs,
                     ell_cap: cap,
+                    grade: 0.0,
                 }),
             );
         }

@@ -77,6 +77,11 @@ pub struct Validation {
     pub f_v: f64,
     pub f_s: f64,
     pub ell_cap: u32,
+    /// Graded-silhouette parameter kappa (WS3, opt-in). 0 = off (the Spec's II.4 rule only; bit-identical to earlier
+    /// releases). kappa > 0 additionally refines every cell that does NOT touch a silhouette but lies within
+    /// distance rho (1 + 1/kappa) of one, so cell size falls geometrically toward the rim instead of jumping from the
+    /// interior level to the rim level. See WS3_QUADRATURE.md.
+    pub grade: f64,
 }
 impl Validation {
     pub fn default_validation() -> Self {
@@ -84,6 +89,7 @@ impl Validation {
             f_v: 0.02,
             f_s: 4e-4,
             ell_cap: 14,
+            grade: 0.0,
         }
     }
     /// Rim-refined only (f_v unchanged): no gain (1.61e-5, 3.9M leaves), the floor there is the interior rho^2 error.
@@ -92,6 +98,7 @@ impl Validation {
             f_v: 0.02,
             f_s: 5e-5,
             ell_cap: 17,
+            grade: 0.0,
         }
     }
     /// f_v = 0.002: MEASURED |R-0.8| = 3.32e-6 at tau = 20 (4.47M leaves, ~1 s). NOT sufficient for 1e-6.
@@ -101,6 +108,7 @@ impl Validation {
             f_v: 0.002,
             f_s: 4e-4,
             ell_cap: 14,
+            grade: 0.0,
         }
     }
     /// Certified preset for the Spec's 1e-6 target of test (c): MEASURED |R-R_exact| = 4.3e-7 (tau 20), 1.8e-7 (tau 5),
@@ -111,6 +119,19 @@ impl Validation {
             f_v: 7e-4,
             f_s: 4e-4,
             ell_cap: 15,
+            grade: 0.0,
+        }
+    }
+    /// Graded preset (WS3, opt-in; the Spec's II.4 rule plus geometric grading toward each silhouette). MEASURED on test (c)
+    /// against the exact curve: |R - R_exact| = 1.5e-7, 3.2e-7, 1.5e-8 at tau = 1, 5, 20 (largest 3.2e-7; 4.0e-7 with the rim
+    /// refined to cap 16), 9.9M leaves, no cap hits, ~3 s per evaluation (certified: 64.8M leaves, ~14 s). Valid only as far as
+    /// those measurements: see WS3_QUADRATURE.md for the evidence and its limits.
+    pub fn graded() -> Self {
+        Validation {
+            f_v: 0.0025,
+            f_s: 4e-4,
+            ell_cap: 15,
+            grade: 0.125,
         }
     }
 }

@@ -4,7 +4,7 @@
 //!   sgrun provenance
 //!   sgrun certify                          test (c) at tau = 1, 5, 20 with Validation::certified() vs the exact oracle
 //!                                          (about 40 s; exit code 1 if any |R - R_exact| > 1e-6)
-//!   sgrun scan  [--mode standard|validation|xhi|certified] [--taus 0.1,1,5,20] [--out file.csv]
+//!   sgrun scan  [--mode standard|validation|xhi|certified|graded] [--taus 0.1,1,5,20] [--out file.csv]
 //!   sgrun orbit [--tau 1e-6] [--steps 1000] [--orbits 5] [--mode v0|v1|v2] [--vg 1e3] [--stride 10] [--out run.csv]
 //!   sgrun drag  [--hgamma 0.005] [--decays 5]
 //!   sgrun skymap [--case c|c2|c3] [--tau 5] [--target 0] [--focus all|1] [--fov 3] [--validation] --out prefix
@@ -83,8 +83,9 @@ fn validation_of(s: &str) -> Option<Validation> {
         "validation" => Some(Validation::default_validation()),
         "xhi" => Some(Validation::xhi()),
         "certified" => Some(Validation::certified()),
+        "graded" => Some(Validation::graded()),
         o => die(&format!(
-            "unknown quadrature mode {o} (standard|validation|xhi|certified)"
+            "unknown quadrature mode {o} (standard|validation|xhi|certified|graded)"
         )),
     }
 }

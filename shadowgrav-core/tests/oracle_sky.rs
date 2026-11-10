@@ -164,3 +164,67 @@ fn screening_curve_certified_mode_matches_exact_oracle() {
         );
     }
 }
+
+/// WS3 graded preset against the exact screening curve: |R - R_exact| < 1e-6 at tau = 1, 5, 20 (measured 1.5e-7, 3.2e-7,
+/// 1.5e-8), with no cap hits and fewer than 12 million leaves per evaluation (measured 9.9M, about 3 s each).
+#[test]
+fn screening_curve_graded_mode_matches_exact_oracle() {
+    let exact = [
+        (1.0, 0.877785076145848),
+        (5.0, 0.801867822859093),
+        (20.0, 0.800000002009972),
+    ];
+    for &(tau, r_ex) in &exact {
+        let mut w = three_body_collinear(tau, 1e-4, 0).unwrap();
+        w.apply_options(|o| o.validation = Some(Validation::graded()))
+            .unwrap();
+        let r = screening_ratio(&w);
+        let st = &w.force.status;
+        eprintln!(
+            "[oracle_sky] graded tau {tau}: R {r:.12} err {:+.3e} leaves {} cap_hits {}",
+            r - r_ex,
+            st.leaf_count,
+            st.cap_hit_count
+        );
+        assert!(
+            (r - r_ex).abs() < 1e-6,
+            "graded tau {tau}: R {r} vs {r_ex}, err {:e}",
+            (r - r_ex).abs()
+        );
+        assert_eq!(st.cap_hit_count, 0, "graded tau {tau}: cap hits");
+        assert!(
+            st.leaf_count < 12_000_000,
+            "graded tau {tau}: {} leaves",
+            st.leaf_count
+        );
+    }
+}
+
+/// The grading rule itself: at fixed (f_v, f_s, cap), grade > 0 adds leaves, never raises the cap-hit flag, and moves the
+/// tau = 20 result toward the exact value (measured |err| 1.9e-5 without grading, 4e-8 with kappa = 0.125 at f_v = 0.04).
+#[test]
+fn grading_adds_leaves_never_flags_cap_hits_and_reduces_error() {
+    let r_ex = 0.800000002009972;
+    let mut out = Vec::new();
+    for grade in [0.0, 0.125] {
+        let mut w = three_body_collinear(20.0, 1e-4, 0).unwrap();
+        w.apply_options(|o| {
+            o.validation = Some(Validation {
+                f_v: 0.04,
+                f_s: 4e-4,
+                ell_cap: 15,
+                grade,
+            })
+        })
+        .unwrap();
+        let r = screening_ratio(&w);
+        out.push(((r - r_ex).abs(), w.force.status.leaf_count));
+        assert_eq!(w.force.status.cap_hit_count, 0, "grade {grade}: cap hits");
+    }
+    eprintln!(
+        "[oracle_sky] grade 0: err {:.2e} leaves {}; grade 0.125: err {:.2e} leaves {}",
+        out[0].0, out[0].1, out[1].0, out[1].1
+    );
+    assert!(out[1].1 > out[0].1, "grading must add leaves");
+    assert!(out[1].0 < out[0].0, "grading must reduce the error here");
+}

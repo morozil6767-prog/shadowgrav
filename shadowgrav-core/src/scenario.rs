@@ -5,7 +5,7 @@
 //! ```json
 //! { "format": "shadowgrav-scenario/1", "title": "test (c)",
 //!   "mode": "v0",                       // v0 | v1 | v2            (default v0)
-//!   "quadrature": "standard",           // standard | validation | xhi | certified   (default standard)
+//!   "quadrature": "standard",           // standard | validation | xhi | certified | graded   (default standard)
 //!   "length_unit": "a0",                // a0 = radius of the m=1, rho=RHO0 sphere (0.01 in code units) | code   (default a0)
 //!   "globals": { "tau_c": 20 },         // OR "kappa0"; optional g_n, xi, v_g, alpha_bg, w:[x,y,z], pi (uncalibrated mode)
 //!   "bodies": [ {"x":[0,0,0]}, {"x":[10,0,0], "v":[0,0,0], "m":1, "rho":2.39e5} ],
@@ -324,9 +324,10 @@ impl Scenario {
             "validation" => Some(Validation::default_validation()),
             "xhi" => Some(Validation::xhi()),
             "certified" => Some(Validation::certified()),
+            "graded" => Some(Validation::graded()),
             o => {
                 return Err(format!(
-                "scenario.quadrature: \"{o}\" is not one of standard, validation, xhi, certified"
+                "scenario.quadrature: \"{o}\" is not one of standard, validation, xhi, certified, graded"
             ))
             }
         };

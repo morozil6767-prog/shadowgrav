@@ -339,6 +339,7 @@ fn cell_body(
     }
     let f_int = cx.val.map(|v| v.f_v).unwrap_or(cx.f);
     let mut ok = rho <= f_int * tmin;
+    let mut graded = false; // refinement requested only by the WS3 grading rule (never a cap-hit)
     if let Some(v) = cx.val {
         // II.4 silhouette rule
         let pi = std::f64::consts::PI;
@@ -361,8 +362,23 @@ fn cell_body(
         if sil.is_finite() && crate::mathx::not_le(rho, v.f_s * sil) {
             ok = false;
         }
+        // WS3 graded rule (opt-in, v.grade = kappa > 0): a cell that does not touch a silhouette (gr > rho) but whose
+        // distance gr to the nearest one satisfies rho > kappa (gr - rho) is refined, so the cell size is graded
+        // geometrically toward the rim. Disabled (and bit-identical to earlier releases) when grade == 0.
+        if v.grade > 0.0 {
+            let mut gr = f64::INFINITY;
+            for &i in t0 {
+                let o = &cx.occ[i as usize];
+                if o.theta < pi {
+                    gr = gr.min((psi(n, &o.chat) - o.theta).abs());
+                }
+            }
+            if gr.is_finite() && gr > rho && rho > v.grade * (gr - rho) {
+                graded = true;
+            }
+        }
     }
-    if ok || level >= cx.ell_cap {
+    if (ok && !graded) || level >= cx.ell_cap {
         if !ok {
             acc.cap_hits += 1;
         } // cap-hit flag (4.3)

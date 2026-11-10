@@ -151,3 +151,24 @@ fn certified_mode_vs_sharp_lens_oracle() {
         );
     }
 }
+
+/// WS3 graded preset on partial and 3D overlap against the SHARP lens oracle: it must be at least as close to the oracle as
+/// validation mode (same no-regression rule as the certified test above), must meet the Spec 4.3 target of 1e-4, and must
+/// leave bodies without sky overlap at exactly zero. The printed lines carry the measurements.
+#[test]
+fn graded_mode_vs_sharp_lens_oracle() {
+    for c in CASES.iter() {
+        let (vv, _, _) = measure(c, Some(Validation::default_validation()), "validation");
+        let (vg, ng, other) = measure(c, Some(Validation::graded()), "graded");
+        assert!(
+            vg <= vv * 1.05 + 1e-9,
+            "graded {vg:e} worse than validation {vv:e}"
+        );
+        assert!(
+            vg <= 1e-4,
+            "graded: |dF|/|F| = {vg:e} (Spec 4.3 target 1e-4)"
+        );
+        assert!(ng <= 1e-2, "graded: Delta^NA relative error {ng:e}");
+        assert!(other <= 1e-12);
+    }
+}
