@@ -679,7 +679,17 @@ impl eframe::App for App {
 
                 if !d.extras.is_empty() {
                     header(ui, "Preset read-outs");
-                    egui::Grid::new("extras").num_columns(2).spacing([10.0, 3.0]).show(ui, |ui| { for (k, v) in &d.extras { kv(ui, k, v.clone()); } });
+                    // Floor the columns so "omega expected" / "T expected" stay one line.
+                    // Longer read-out strings still wrap; this is not a wrap disable.
+                    egui::Grid::new("extras")
+                        .num_columns(2)
+                        .spacing([10.0, 3.0])
+                        .min_col_width(148.0)
+                        .show(ui, |ui| {
+                            for (k, v) in &d.extras {
+                                kv(ui, k, v.clone());
+                            }
+                        });
                 }
 
                 egui::CollapsingHeader::new(RichText::new("Conservation").strong()).default_open(true).show(ui, |ui| {
