@@ -6,7 +6,7 @@ A binary64 reference engine and native desktop instrument for testing the *speci
 
 | Layer | Repository state | Evidence status |
 |---|---|---|
-| Physics core | Pair-exact force path, finite-sphere saturation, adaptive non-additive overlap correction, V0/V1/V2, integrator and diagnostics are implemented | Extensive named tests and oracle artifacts are present; core tests executed successfully on Linux x86_64 (rustc 1.99.1) in this review |
+| Physics core | Pair-exact force path, finite-sphere saturation, adaptive non-additive overlap correction, V0/V1/V2, integrator and diagnostics are implemented | One Linux x86_64 run on rustc 1.88.0: `cargo test --locked --workspace --all-targets` gave 142 passed, 0 failed, 4 ignored. Log `/tmp/sg-ws7c-evidence/test.txt`, commit `0a443e2` (docs and scripts on top of `52058f4`). Not a Windows or macOS result. |
 | Test (c) certified screening | A certified quadrature preset and a measured result are documented in `CLAIMS.md` / `shadowgrav-core/CONVERGENCE.md` | Repository-reported result, not re-run in this review |
 | Native UI | egui desktop instrument with 3D view, force arrows, sky diagnostic, presets, conformance status and snapshot export | Source and headless UI tests present; native window still needs a real desktop-session proof |
 | Multi-OS CI | Core and native UI workflows configured for Ubuntu, macOS and Windows; reproducibility digest comparison configured | Configuration is present; no live GitHub Actions run/result was supplied with this source archive |
@@ -48,10 +48,19 @@ cargo build --release --locked -p shadowgrav-ui
 cargo run --release --locked -p shadowgrav-ui
 ```
 
+### Verify
+
+This is the section `CLAIMS.md` points at. The words "in 10 minutes" are not a measured duration.
+
 ### Automated checks
 
 ```bash
-# Full workspace tests, including core and headless UI tests
+# Workspace tests, including core, headless UI tests, and example harnesses.
+# Recorded on rustc 1.88.0 (Linux x86_64): 142 passed, 0 failed, 4 ignored.
+# Workspace test profile is opt-level 3. This invocation is not --release.
+cargo test --locked --workspace --all-targets
+
+# Separate invocation. No count from this command is recorded in this file.
 cargo test --release --locked --workspace
 
 # Screening measurement ladder
@@ -116,4 +125,4 @@ AUDIT_2026-11-06.md
 
 ## Release discipline
 
-A release candidate needs reproducible local `cargo test --release --locked --workspace` results, a real native-window run on the target machine, and green Ubuntu/macOS/Windows Actions results. Keep the test logs, run metadata, screenshots and commit hash together. Do not upgrade a source-level claim into an executed result without its corresponding evidence.
+A release candidate needs the command list in `RELEASING.md`, including a fresh `cargo test --locked --workspace --all-targets` log, a real native-window run on the target machine, and green Ubuntu/macOS/Windows results from a run of `.github/workflows/ws4-matrix.yml`. That workflow has not been run. Keep the test logs, run metadata, screenshots and commit hash together. Do not upgrade a source-level claim into an executed result without its corresponding evidence.
