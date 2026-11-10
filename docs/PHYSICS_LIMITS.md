@@ -72,17 +72,17 @@ The left side is the joint deficit. The right side is the sum of single-occluder
 
 ## Quadrature error by tier
 
-Two sources only. Neither table was regenerated for this chapter.
+`WS6_VALIDATION.md` was not regenerated for this chapter. `WS3_QUADRATURE.md` sections 1–5 are the rustc 1.97.0 record. Its section 0 is a rustc 1.88.0 re-run of the certified, graded, and xhi error rows only. Log `/tmp/sg-ws7d-meas.log`, commit `2b7127db01ab`, `parallel: true`, 4 threads.
 
-`WS3_QUADRATURE.md` says its runs were the serial core on rustc 1.97.0. Test (c), `|R - R_exact|`:
+Test (c), `|R - R_exact|`, from that log (not from the 1.97.0 rounding):
 
 | tier | tau = 1 | tau = 5 | tau = 20 | leaves |
 |---|---|---|---|---|
-| certified (7e-4, 4e-4, 15, 0) | 4.74e-8 | 1.82e-7 | 4.31e-7 | 64,767,596 |
-| graded (0.0025, 4e-4, 15, 0.125) | 1.51e-7 | 3.21e-7 | 1.50e-8 | 9,884,156 |
-| xhi (ungraded, 0.002) | 5.56e-7 | 1.95e-6 | 3.32e-6 | 4,467,284 |
+| certified | 4.741912e-8 | 1.822237e-7 | 4.307904e-7 | 64,767,596 |
+| graded | 1.513718e-7 | 3.212910e-7 | 1.496597e-8 | 9,884,156 |
+| xhi | 5.554733e-7 | 1.946534e-6 | 3.322159e-6 | 4,467,284 |
 
-That file's defensible graded statement is the largest of the nominal error and the rim-refined error, `4.0e-7`, not the nominal tau = 20 figure `1.5e-8`. With the rim refined (`f_s` `1e-4`, cap 16) it records tau = 20 error `-1.92e-7` and tau = 5 error `-3.99e-7`.
+These figures in this chapter still come only from the rustc 1.97.0 text in `WS3_QUADRATURE.md`. They are not in `/tmp/sg-ws7d-meas.log`: the defensible graded statement `4.0e-7`; the rim-refined errors `-1.92e-7` (tau 20) and `-3.99e-7` (tau 5) at `f_s` `1e-4`, cap 16; the cap-15 to cap-16 shift `-2.68e-7`; the ladder rungs; the self-convergence indicator; the lens table in that file's section 3; the one-thread seconds `16.8`, `3.5`, and `1.1`; and the rounded error row `4.74e-8`, `1.82e-7`, `4.31e-7`, `1.51e-7`, `3.21e-7`, `1.50e-8`, `5.56e-7`, `1.95e-6`, `3.32e-6`. The leaf counts in that rounded table (`64,767,596`, `9,884,156`, `4,467,284`) are the same three counts as the 1.88.0 log.
 
 `WS6_VALIDATION.md` (seed `20261107`, 58 geometries). Discrepancy over gross:
 

@@ -78,15 +78,22 @@ No log in this bundle records a single measurement that the whole sentence (isot
 
 `CLAIMS.md` states measured values: standard `|R-0.8| ≈ 1.29e-3`, validation `≈ 1.58e-5`, fine/xhi `≈ 3.32e-6`, certified `|R-R_exact| ≈ 4.3e-7`.
 
-This bundle did not run `verify c` or `sgrun certify`.
+Separate from the bundle above. Log `/tmp/sg-ws7d-meas.log`. Toolchain line in that log: `rustc 1.88.0 (6b00bc388 2025-06-23)`. `cargo 1.88.0 (873a06493 2025-05-10)`. Git head at the run: `2b7127db01ab5c3a2be691ce4d835509cbf7400d` (clean; the certify provenance prints `git_commit` `2b7127db01ab`). Commands and exits:
 
-`artifacts/cli/verify-c.log` contains those standard, validation, and xhi digits (`|R-0.8|=1.29e-3`, `1.58e-5`, `3.32e-6`) for command `/workspace/target/release/verify c`, `start_utc=2026-11-07T01:59:36Z`. The file has no `rustc` line and no commit. **UNSUPPORTED** for rustc 1.88.0.
+| command | exit |
+|---|---|
+| `rustup run 1.88.0 cargo run --release --locked -p shadowgrav-core --bin verify -- c` | 0 (`VERIFY_C_EXIT`) |
+| `rustup run 1.88.0 cargo run --release --locked -p shadowgrav-core --bin sgrun -- certify` | 0 (`CERTIFY_EXIT`) |
 
-`artifacts/cli/certify.log` contains certified `|R-R_exact|` `4.308e-7` at tau 20, with provenance `rustc 1.83.0`, `git_commit e89f0b1082a2`, `git_state dirty`. That is not rustc 1.88.0 and not commit `0a443e2`. **UNSUPPORTED** for this standard.
+`verify c` prints, at tau = 20: standard `|R-0.8|=1.29e-3`, validation `|R-0.8|=1.58e-5`, xhi `(0.002, 4e-4, cap14)` `|R-0.8|=3.32e-6`. Those three measured digits are **SUPPORTED**. `stage_c` in `verify.rs` prints them and does not call `rep.check`, so the log's `0 check(s) failed` is not a recorded pass of the `5e-3` clause. The clause itself is text. The printed standard value is `1.29e-3`.
 
-`WS3_QUADRATURE.md` records certified `4.31e-7`, graded, and xhi `3.32e-6` and says those runs were rustc 1.97.0. **UNSUPPORTED** as a 1.88.0 result. The rim sentence "a few ×10⁻⁷" is the `-2.68e-7` cap shift in that same file. Not re-run here. **UNSUPPORTED** on 1.88.0.
+`sgrun certify` prints `|R-R_exact|` `4.308e-7` at tau 20 (`4.307904e-7` in the JSON row), leaves `64767596`, cap hits 0, `pass_1e-6` true. The same command prints `4.742e-8` at tau 1 and `1.822e-7` at tau 5, both `pass_1e-6` true. The claim's `≈ 4.3e-7` on this geometry is **SUPPORTED** by the tau 20 row. `all_pass` is true.
 
-`screening_curve_certified_mode_matches_exact_oracle` is ignored in `test.txt`. Certified test (c) was not executed by the suite.
+The rim sentence "a few ×10⁻⁷" is the `-2.68e-7` cap shift in `WS3_QUADRATURE.md` (rustc 1.97.0). It is not in `/tmp/sg-ws7d-meas.log`. **UNSUPPORTED** on 1.88.0.
+
+`artifacts/cli/verify-c.log` has the same standard, validation, and xhi digits and no rustc line. `artifacts/cli/certify.log` is rustc 1.83.0, `git_commit e89f0b1082a2`, dirty. Those older files are not the support for this row. The support is `/tmp/sg-ws7d-meas.log`.
+
+`screening_curve_certified_mode_matches_exact_oracle` is ignored in the bundle's `test.txt`. The certify binary above is the run that scored certified test (c).
 
 ### 3. Independent oracles
 
@@ -140,7 +147,7 @@ These rows are limits written in `CLAIMS.md`. They are not measurements unless a
 | # | non-claim | status on rustc 1.88.0 at `0a443e2` |
 |---|---|---|
 | 1 | Not Sakharov, Puthoff, GR, cosmology, or Lorentz-covariant physics | Text in `CLAIMS.md` and `MODEL_VS_OBSERVATION.md`. No command in this bundle tests those other theories. **UNSUPPORTED** as a measurement. |
-| 2 | Standard, validation, and fine do not meet Spec 1e-6 on test (c); only certified does, on the stated geometry | The digits live in `artifacts/cli/verify-c.log` (no rustc) and `WS3_QUADRATURE.md` (rustc 1.97.0). Not re-run here. **UNSUPPORTED** on 1.88.0. |
+| 2 | Standard, validation, and fine do not meet Spec 1e-6 on test (c); only certified does, on the stated geometry | `/tmp/sg-ws7d-meas.log`, rustc 1.88.0, commit `2b7127db01ab`. At tau 20, `verify c` prints `|R-0.8|` `1.29e-3` (standard), `1.58e-5` (validation), `3.32e-6` (xhi, f_v 0.002). Each printed value is above `1e-6`. `sgrun certify` sets `pass_1e-6` true at tau 1, 5, and 20 against `R_exact` (tau 20 error `4.307904e-7`). **SUPPORTED** for those presets on this geometry. Other geometries were not in that log. |
 | 3 | Certified error is not rim-free; the next stair is not guaranteed to reach 1e-7 | Stated in `WS3_QUADRATURE.md` (cap-15 to cap-16 shift `-2.68e-7`). Not re-run here. **UNSUPPORTED** on 1.88.0. |
 | 4 | V2 is not as thoroughly validated as V0/V1 and stays caveat-flagged | `v2_valid_flag_reports_fast_bodies_in_every_mode` is `ok` in `test.txt`. A comparison of V2 coverage against V0/V1 was not logged. The "less validated" sentence: **UNSUPPORTED** as a measurement. |
 | 5 | Thin-fast forces are not scientifically interchangeable with conforming forces | `thin_fast_is_gated` is `ok`. `thin_fast_matches_conforming_within_barnes_hut_error` is `ok` and is a bounded match, not a measured scientific difference. A quantified non-interchangeability figure: **UNSUPPORTED**. Source labels the path non-conforming (`thin_fast.rs`). |
@@ -151,7 +158,7 @@ These rows are limits written in `CLAIMS.md`. They are not measurements unless a
 
 - `cargo test --release`
 - `verify` with `SHADOWGRAV_VERIFY_PDF_STEPS=1000` as a process (the integration test of that path is inside `test.txt`)
-- `verify c`, `sgrun certify`
+- `verify c` and `sgrun certify` are in `/tmp/sg-ws7d-meas.log`, not in this bundle's directory
 - `python3 oracle/oracle_screening.py` and `oracle/xcheck_random.py`
 - core MSRV `scripts/core-isolated-msrv.sh` on rustc 1.80.0
 - cargo-deny, cargo-audit

@@ -1,7 +1,21 @@
 # WS3: why the cheaper tiers miss 1e-6 on test (c), and an opt-in graded tier
 
-Evidence tags: [RAN] executed, [READ] inspected, [INFERRED] reasoning. All [RAN] numbers come from the serial core (no `rayon`, no `libm` crate) on rustc 1.97.0, 2 cores, one thread, and are
+Evidence tags: [RAN] executed, [READ] inspected, [INFERRED] reasoning. All [RAN] numbers in the sections below come from the serial core (no `rayon`, no `libm` crate) on rustc 1.97.0, 2 cores, one thread, and are
 reproducible from `report/data/ws3_graded.csv` (raw logs: the evidence bundle of the WS3 pass). Timings were taken on one machine and are indicative only.
+
+The body of this file was not regenerated. The raw logs named in `ws3_graded.csv` (`exp4-kappa.txt`, `exp5-fv-kappa.txt`, `exp6-ladder.txt`, `exp7-certified-vs-graded.txt`, `exp8-idle-timing.txt`, `exp9-nextrung.txt`) are not in this tree, so the ladder, the rim-cap shift, the lens table, and the one-thread timings were not re-run. The section 3 error table for certified, graded, and xhi was re-run on rustc 1.88.0; see the next section. Those new rows do not replace the 1.97.0 table.
+
+## 0. Section 3 error rows on rustc 1.88.0
+
+Log `/tmp/sg-ws7d-meas.log`. `rustc 1.88.0 (6b00bc388 2025-06-23)`. Commit `2b7127db01ab5c3a2be691ce4d835509cbf7400d`, clean. Provenance in that log: `parallel: true`, `threads: 4`, `vendored_libm: false`, linux x86_64. Exits: `sgrun certify` 0, `sgrun scan --mode graded --taus 1,5,20` 0, `sgrun scan --mode xhi --taus 1,5,20` 0. `|R - R_exact|` and leaves:
+
+| tier | tau = 1 | tau = 5 | tau = 20 | leaves |
+|---|---|---|---|---|
+| certified (`sgrun certify`) | 4.741912e-8 | 1.822237e-7 | 4.307904e-7 | 64,767,596 |
+| graded (`scan --mode graded`) | 1.513718e-7 | 3.212910e-7 | 1.496597e-8 | 9,884,156 |
+| xhi (`scan --mode xhi`) | 5.554733e-7 | 1.946534e-6 | 3.322159e-6 | 4,467,284 |
+
+Cap hits were 0 on every row. Certified `pass_1e-6` was true at all three tau. Wall times in that log are for this 4-thread build (certified about 5.7 s per tau, graded about 1.0 to 1.2 s, xhi about 0.4 s). They are not a replacement for the 16.8 s / 3.5 s / 1.1 s one-thread figures in section 3.
 **Scope:** only silhouette-aware refinement was investigated. Exact handling of fully nested discs and higher-order leaf rules were **not** investigated. The Spec, its addenda and every existing tolerance are unchanged.
 
 ## 1. What limits the existing tiers [RAN]
